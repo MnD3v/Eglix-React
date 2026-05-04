@@ -1,0 +1,64 @@
+@import "tailwindcss";
+
+@font-face {
+    font-family: 'Euclid Circular B';
+    src: url('/fonts/euclid-circular-b/Euclid Circular B Regular.ttf') format('truetype');
+    font-weight: 400;
+    font-style: normal;
+}
+
+@font-face {
+    font-family: 'Euclid Circular B';
+    src: url('/fonts/euclid-circular-b/Euclid Circular B Medium.ttf') format('truetype');
+    font-weight: 500;
+    font-style: normal;
+}
+
+@font-face {
+    font-family: 'Euclid Circular B';
+    src: url('/fonts/euclid-circular-b/Euclid Circular B SemiBold.ttf') format('truetype');
+    font-weight: 600;
+    font-style: normal;
+}
+
+@font-face {
+    font-family: 'Euclid Circular B';
+    src: url('/fonts/euclid-circular-b/Euclid Circular B Bold.ttf') format('truetype');
+    font-weight: 700;
+    font-style: normal;
+}
+
+@font-face {
+    font-family: 'SangBleu Kingdom';
+    src: url('/fonts/sangbleu/SangBleuKingdomTrial-Regular.otf') format('opentype');
+    font-weight: 400;
+    font-style: normal;
+}
+
+@font-face {
+    font-family: 'SangBleu Kingdom';
+    src: url('/fonts/sangbleu/SangBleuKingdomTrial-Medium.otf') format('opentype');
+    font-weight: 500;
+    font-style: normal;
+}
+
+@font-face {
+    font-family: 'SangBleu Kingdom';
+    src: url('/fonts/sangbleu/SangBleuKingdomTrial-Bold.otf') format('opentype');
+    font-weight: 700;
+    font-style: normal;
+}
+
+@theme {
+    --font-sans: "Euclid Circular B", sans-serif;
+    --font-serif: "SangBleu Kingdom", serif;
+    --color-primary: #ff2600;
+    --color-primary-dark: #cc1e00;
+    --color-primary-light: #ff5733;
+    --color-secondary: #9c27b0;
+}
+
+body {
+    font-family: "Euclid Circular B", sans-serif;
+    background-color: #f5f5f5;
+}

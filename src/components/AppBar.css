@@ -1,0 +1,10 @@
+p{
+    color: black;
+}
+
+.logo{
+    display: flex;
+}
+.logo img{
+    height: 41px;
+}
