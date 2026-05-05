@@ -147,7 +147,7 @@ export default function ProjectForm() {
                 </div>
             </div>
 
-            <div className="bg-white rounded-2xl p-8 shadow-sm border border-gray-100">
+            <div className="bg-white rounded-xl p-8 shadow-sm border border-gray-100">
                 <form onSubmit={handleSubmit} className="space-y-6">
                     {/* Nom et Statut */}
                     <div className="grid grid-cols-1 md:grid-cols-2 gap-6">

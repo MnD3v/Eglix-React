@@ -194,7 +194,7 @@ export default function OfferingForm() {
                 </div>
             </div>
 
-            <div className="bg-white rounded-2xl p-8 shadow-sm border border-gray-100">
+            <div className="bg-white rounded-xl p-8 shadow-sm border border-gray-100">
                 <form onSubmit={handleSubmit} className="space-y-6">
                     {/* Montant et Date */}
                     <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
@@ -251,7 +251,7 @@ export default function OfferingForm() {
                                     type="button"
                                     onClick={toggleAnonymous}
                                     className={`text-xs font-medium px-2 py-1 rounded-full transition-colors ${isAnonymous
-                                        ? 'bg-primary text-white'
+                                        ? 'bg-primary text-black'
                                         : 'bg-gray-100 text-gray-500 hover:bg-gray-200'
                                         }`}
                                 >

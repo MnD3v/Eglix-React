@@ -81,7 +81,7 @@ export default function ProjectDetails() {
             <p className="mt-2 text-gray-500">{error || "Projet introuvable"}</p>
             <button
                 onClick={() => navigate('/projects')}
-                className="mt-6 px-4 py-2 bg-white border border-gray-300 rounded-lg text-sm font-medium text-gray-700 hover:bg-gray-50"
+                className="mt-6 px-4 py-2 bg-white border border-gray-300 rounded-xl text-sm font-medium text-gray-700 hover:bg-gray-50"
             >
                 Retour à la liste
             </button>
@@ -122,7 +122,7 @@ export default function ProjectDetails() {
                 </div>
             </div>
 
-            <div className="bg-white rounded-2xl shadow-sm border border-gray-100 overflow-hidden">
+            <div className="bg-white rounded-xl shadow-sm border border-gray-100 overflow-hidden">
                 {/* Main Section */}
                 <div className="p-8 border-b border-gray-100 bg-gray-50/50">
                     <div className="flex justify-between items-start mb-4">

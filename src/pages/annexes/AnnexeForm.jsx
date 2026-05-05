@@ -113,7 +113,7 @@ export default function AnnexeForm() {
             </div>
 
             {/* Form Card */}
-            <form onSubmit={handleSubmit} className="bg-white border border-gray-200 rounded-2xl p-6 md:p-8 space-y-6">
+            <form onSubmit={handleSubmit} className="bg-white border border-gray-200 rounded-xl p-6 md:p-8 space-y-6">
                 {submitError && (
                     <div className="bg-red-50 border border-red-200 text-red-700 px-4 py-3 rounded-xl text-sm">
                         {submitError}

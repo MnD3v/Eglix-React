@@ -104,7 +104,7 @@ export default function AdministrationForm() {
                 <div className="bg-red-50 border border-red-200 rounded-xl p-4 text-sm text-red-700">{error}</div>
             )}
 
-            <form onSubmit={handleSubmit} className="bg-white rounded-2xl p-6 border border-gray-100 shadow-sm space-y-5">
+            <form onSubmit={handleSubmit} className="bg-white rounded-xl p-6 border border-gray-100 shadow-sm space-y-5">
                 {/* Membre */}
                 <div>
                     <label className="block text-sm font-medium text-gray-700 mb-1">
@@ -135,8 +135,8 @@ export default function AdministrationForm() {
                                 key={fn}
                                 type="button"
                                 onClick={() => setFormData(f => ({ ...f, function_title: f.function_title === fn ? '' : fn }))}
-                                className={`px-3 py-1 rounded-lg text-xs font-medium border transition-all ${formData.function_title === fn
-                                        ? 'bg-primary text-white border-primary'
+                                className={`px-3 py-1 rounded-xl text-xs font-medium border transition-all ${formData.function_title === fn
+                                        ? 'bg-primary text-black border-primary'
                                         : 'border-gray-200 text-gray-600 hover:border-gray-300 hover:bg-gray-50'
                                     }`}
                             >
@@ -219,7 +219,7 @@ export default function AdministrationForm() {
                     <button
                         type="submit"
                         disabled={loading}
-                        className="flex-1 px-4 py-2.5 bg-primary text-white rounded-xl text-sm font-medium hover:bg-primary-dark shadow-sm transition-all disabled:opacity-50"
+                        className="flex-1 px-4 py-2.5 bg-primary text-black rounded-xl text-sm font-medium hover:bg-primary-dark shadow-sm transition-all disabled:opacity-50"
                     >
                         {loading ? 'Enregistrement...' : (isEdit ? 'Mettre à jour' : 'Enregistrer')}
                     </button>

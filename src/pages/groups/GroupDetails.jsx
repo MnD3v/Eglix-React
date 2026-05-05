@@ -156,14 +156,14 @@ export default function GroupDetails() {
                 {isLeader && (
                     <button
                         onClick={() => openPermissionsModal(gm)}
-                        className="text-xs px-2.5 py-1 rounded-lg border border-gray-200 text-gray-600 hover:border-blue-300 hover:text-blue-600 hover:bg-blue-50 transition-all"
+                        className="text-xs px-2.5 py-1 rounded-xl border border-gray-200 text-gray-600 hover:border-blue-300 hover:text-blue-600 hover:bg-blue-50 transition-all"
                     >
                         Permissions
                     </button>
                 )}
                 <button
                     onClick={() => setRemoveModal({ open: true, groupMember: gm })}
-                    className="p-1.5 rounded-lg text-gray-300 hover:text-red-500 hover:bg-red-50 transition-all"
+                    className="p-1.5 rounded-xl text-gray-300 hover:text-red-500 hover:bg-red-50 transition-all"
                 >
                     <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                         <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M6 18L18 6M6 6l12 12" />
@@ -212,7 +212,7 @@ export default function GroupDetails() {
 
             <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
                 {/* Responsables */}
-                <div className="bg-white rounded-2xl border border-gray-200 p-5">
+                <div className="bg-white rounded-xl border border-gray-200 p-5">
                     <div className="flex items-center justify-between mb-4">
                         <h2 className="font-semibold text-gray-900">
                             Responsables
@@ -220,7 +220,7 @@ export default function GroupDetails() {
                         </h2>
                         <button
                             onClick={() => { setSelectedRole('leader'); setAddMemberModal(true); }}
-                            className="text-xs px-3 py-1.5 rounded-lg bg-gray-100 text-gray-700 hover:bg-gray-200 transition-all font-medium"
+                            className="text-xs px-3 py-1.5 rounded-xl bg-gray-100 text-gray-700 hover:bg-gray-200 transition-all font-medium"
                         >
                             + Ajouter
                         </button>
@@ -233,7 +233,7 @@ export default function GroupDetails() {
                 </div>
 
                 {/* Membres */}
-                <div className="bg-white rounded-2xl border border-gray-200 p-5">
+                <div className="bg-white rounded-xl border border-gray-200 p-5">
                     <div className="flex items-center justify-between mb-4">
                         <h2 className="font-semibold text-gray-900">
                             Membres
@@ -241,7 +241,7 @@ export default function GroupDetails() {
                         </h2>
                         <button
                             onClick={() => { setSelectedRole('member'); setAddMemberModal(true); }}
-                            className="text-xs px-3 py-1.5 rounded-lg bg-gray-100 text-gray-700 hover:bg-gray-200 transition-all font-medium"
+                            className="text-xs px-3 py-1.5 rounded-xl bg-gray-100 text-gray-700 hover:bg-gray-200 transition-all font-medium"
                         >
                             + Ajouter
                         </button>
@@ -258,7 +258,7 @@ export default function GroupDetails() {
             {addMemberModal && (
                 <div className="fixed inset-0 z-50 flex items-center justify-center p-4">
                     <div className="fixed inset-0 bg-black/30 backdrop-blur-sm" onClick={() => setAddMemberModal(false)} />
-                    <div className="relative bg-white rounded-2xl shadow-xl w-full max-w-md p-6">
+                    <div className="relative bg-white rounded-xl shadow-xl w-full max-w-md p-6">
                         <h3 className="text-lg font-bold text-gray-900 mb-4">
                             Ajouter un {selectedRole === 'leader' ? 'responsable' : 'membre'}
                         </h3>
@@ -313,7 +313,7 @@ export default function GroupDetails() {
             {permissionsModal.open && (
                 <div className="fixed inset-0 z-50 flex items-center justify-center p-4">
                     <div className="fixed inset-0 bg-black/30 backdrop-blur-sm" onClick={() => setPermissionsModal({ open: false, leader: null })} />
-                    <div className="relative bg-white rounded-2xl shadow-xl w-full max-w-md p-6">
+                    <div className="relative bg-white rounded-xl shadow-xl w-full max-w-md p-6">
                         <h3 className="text-lg font-bold text-gray-900 mb-1">Permissions du responsable</h3>
                         <p className="text-sm text-gray-500 mb-5">
                             {permissionsModal.leader?.members?.first_name} {permissionsModal.leader?.members?.last_name}

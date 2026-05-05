@@ -160,7 +160,7 @@ export default function PublicMemberForm() {
             <div className="max-w-3xl mx-auto">
                 {/* Header */}
                 <div className="text-center mb-8">
-                    <div className="mx-auto h-16 w-16 bg-primary rounded-2xl flex items-center justify-center shadow-lg mb-4">
+                    <div className="mx-auto h-16 w-16 bg-primary rounded-xl flex items-center justify-center shadow-lg mb-4">
                         <span className="text-white font-bold text-2xl">
                             {church?.name?.[0] || 'E'}
                         </span>
@@ -338,7 +338,7 @@ export default function PublicMemberForm() {
                         <button
                             type="submit"
                             disabled={submitting}
-                            className="w-full flex justify-center py-3 px-4 border border-transparent rounded-xl shadow-sm text-sm font-medium text-white bg-primary hover:bg-primary-dark focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-primary transition-all disabled:opacity-70 disabled:cursor-not-allowed"
+                            className="w-full flex justify-center py-3 px-4 border border-transparent rounded-xl shadow-sm text-sm font-medium text-black bg-primary hover:bg-primary-dark focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-primary transition-all disabled:opacity-70 disabled:cursor-not-allowed"
                         >
                             {submitting ? (
                                 <span className="flex items-center gap-2">

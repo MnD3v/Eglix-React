@@ -36,7 +36,7 @@ export default function ChurchSwitcherModal({ isOpen, onClose }) {
             ></div>
 
             {/* Modal */}
-            <div className="relative bg-white rounded-2xl shadow-xl transform transition-all sm:max-w-md w-full overflow-hidden border border-gray-100">
+            <div className="relative bg-white rounded-xl shadow-xl transform transition-all sm:max-w-md w-full overflow-hidden border border-gray-100">
                 <div className="p-6 border-b border-gray-100">
                     <div className="flex items-center justify-between">
                         <h3 className="text-lg font-serif font-bold text-gray-900 leading-6">
@@ -61,10 +61,10 @@ export default function ChurchSwitcherModal({ isOpen, onClose }) {
                                     : 'hover:bg-gray-50 border border-transparent'
                                     }`}
                             >
-                                <div className={`w-10 h-10 rounded-lg flex items-center justify-center flex-shrink-0 ${currentChurch?.id === church.id ? 'bg-primary text-white' : 'bg-gray-100 text-gray-500'
+                                <div className={`w-10 h-10 rounded-xl flex items-center justify-center flex-shrink-0 ${currentChurch?.id === church.id ? 'bg-primary text-black' : 'bg-gray-100 text-gray-500'
                                     }`}>
                                     {church.logo_url ? (
-                                        <img src={church.logo_url} alt="" className="w-full h-full object-cover rounded-lg" />
+                                        <img src={church.logo_url} alt="" className="w-full h-full object-cover rounded-xl" />
                                     ) : (
                                         <span className="font-bold text-lg">{church.name[0].toUpperCase()}</span>
                                     )}

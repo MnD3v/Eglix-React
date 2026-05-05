@@ -121,8 +121,8 @@ export default function AnnexesList() {
                 </div>
             ) : annexes.length === 0 ? (
                 /* Empty State */
-                <div className="bg-white border border-dashed border-gray-300 rounded-2xl p-12 text-center">
-                    <div className="w-16 h-16 bg-gray-100 rounded-2xl flex items-center justify-center mx-auto mb-4">
+                <div className="bg-white border border-dashed border-gray-300 rounded-xl p-12 text-center">
+                    <div className="w-16 h-16 bg-gray-100 rounded-xl flex items-center justify-center mx-auto mb-4">
                         <span className="text-gray-400"><Icons.Building /></span>
                     </div>
                     <h3 className="text-lg font-semibold text-gray-900 mb-2">Aucune annexe</h3>
@@ -170,7 +170,7 @@ function AnnexeCard({ annexe, onEdit, onDelete }) {
     const navigate = useNavigate();
 
     return (
-        <div className="bg-white border border-gray-200 rounded-2xl p-6 hover:shadow-md hover:border-gray-300 transition-all group flex flex-col gap-4">
+        <div className="bg-white border border-gray-200 rounded-xl p-6 hover:shadow-md hover:border-gray-300 transition-all group flex flex-col gap-4">
             {/* Top */}
             <div className="flex items-start justify-between gap-3">
                 <div
@@ -197,14 +197,14 @@ function AnnexeCard({ annexe, onEdit, onDelete }) {
                 <div className="flex items-center gap-1 flex-shrink-0">
                     <button
                         onClick={onEdit}
-                        className="p-1.5 hover:bg-gray-100 rounded-lg transition-colors text-gray-400 hover:text-gray-700"
+                        className="p-1.5 hover:bg-gray-100 rounded-xl transition-colors text-gray-400 hover:text-gray-700"
                         title="Modifier"
                     >
                         <Icons.Pencil />
                     </button>
                     <button
                         onClick={onDelete}
-                        className="p-1.5 hover:bg-red-50 rounded-lg transition-colors text-gray-400 hover:text-red-500"
+                        className="p-1.5 hover:bg-red-50 rounded-xl transition-colors text-gray-400 hover:text-red-500"
                         title="Supprimer"
                     >
                         <Icons.Trash />

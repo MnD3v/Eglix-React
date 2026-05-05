@@ -79,28 +79,18 @@ export default function Dashboard() {
     return (
         <div className="space-y-8">
             {/* Welcome Banner */}
-            <div className="bg-gradient-to-br from-primary/5 to-primary/10 rounded-2xl p-8 md:p-12 border border-primary/10 relative overflow-hidden">
+            {/* Welcome Banner */}
+            <div className="bg-white rounded-xl p-8 border border-gray-100 relative overflow-hidden">
                 <div className="relative z-10">
-                    <p className="text-sm font-semibold text-primary uppercase tracking-wider mb-2">
-                        Bienvenue sur Eglix
-                    </p>
-                    <h1 className="text-3xl md:text-4xl font-bold text-gray-900 mb-4 font-serif flex items-center gap-3">
+                    <h1 className="text-3xl font-bold text-gray-900 mb-2 font-serif">
                         Salut {userName}
-                        <svg className="w-8 h-8 text-primary" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M7 11.5V14m0-2.5v-6a1.5 1.5 0 113 0m-3 6a1.5 1.5 0 00-3 0v2a7.5 7.5 0 0015 0v-5a1.5 1.5 0 00-3 0m-6-3V11m0-5.5v-1a1.5 1.5 0 013 0v1m0 0V11m0-5.5a1.5 1.5 0 013 0v3m0 0V11" /></svg>
                     </h1>
-                    <p className="text-gray-700 max-w-2xl mb-6">
+                    <p className="text-gray-500 max-w-2xl mb-6">
                         Gérez votre église simplement et efficacement.
                     </p>
-                    <Link to="/members/new" className="inline-block bg-primary hover:bg-primary/90 text-white font-semibold px-6 py-3 rounded-xl transition-colors shadow-sm hover:shadow-md">
+                    <Link to="/members/new" className="inline-block bg-primary hover:bg-primary/90 text-black font-semibold px-6 py-2.5 rounded-xl transition-all shadow-sm active:scale-95">
                         Ajouter un membre →
                     </Link>
-                </div>
-
-                {/* Decorative element */}
-                <div className="absolute right-0 top-0 w-64 h-64 opacity-10">
-                    <svg viewBox="0 0 200 200" className="w-full h-full">
-                        <path fill="currentColor" className="text-primary" d="M100,20 L120,80 L180,80 L130,120 L150,180 L100,140 L50,180 L70,120 L20,80 L80,80 Z" />
-                    </svg>
                 </div>
             </div>
 
@@ -108,7 +98,7 @@ export default function Dashboard() {
             <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
                 <Link to="/members/new" className="bg-white p-6 rounded-xl border border-gray-200 hover:border-primary/30 hover:shadow-md transition-all text-left group">
                     <div className="flex items-center gap-4">
-                        <div className="w-12 h-12 bg-blue-50 rounded-lg flex items-center justify-center group-hover:bg-blue-100 transition-colors">
+                        <div className="w-12 h-12 bg-blue-50 rounded-xl flex items-center justify-center group-hover:bg-blue-100 transition-colors">
                             <span className="text-blue-600">
                                 <Icons.UserAdd />
                             </span>
@@ -122,7 +112,7 @@ export default function Dashboard() {
 
                 <Link to="/tithes/new" className="bg-white p-6 rounded-xl border border-gray-200 hover:border-primary/30 hover:shadow-md transition-all text-left group">
                     <div className="flex items-center gap-4">
-                        <div className="w-12 h-12 bg-emerald-50 rounded-lg flex items-center justify-center group-hover:bg-emerald-100 transition-colors">
+                        <div className="w-12 h-12 bg-emerald-50 rounded-xl flex items-center justify-center group-hover:bg-emerald-100 transition-colors">
                             <span className="text-emerald-600">
                                 <Icons.Money />
                             </span>
@@ -136,7 +126,7 @@ export default function Dashboard() {
 
                 <button className="bg-white p-6 rounded-xl border border-gray-200 hover:border-primary/30 hover:shadow-md transition-all text-left group">
                     <div className="flex items-center gap-4">
-                        <div className="w-12 h-12 bg-green-50 rounded-lg flex items-center justify-center group-hover:bg-green-100 transition-colors">
+                        <div className="w-12 h-12 bg-green-50 rounded-xl flex items-center justify-center group-hover:bg-green-100 transition-colors">
                             <span className="text-green-600">
                                 <Icons.Calendar />
                             </span>
@@ -150,57 +140,49 @@ export default function Dashboard() {
             </div>
 
             {/* Stats Cards */}
-            <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6">
-                <div className="bg-white rounded-xl p-6 border border-gray-200">
-                    <div className="flex items-center justify-between mb-4">
-                        <h3 className="text-sm font-semibold text-gray-500 uppercase tracking-wider">Membres totaux</h3>
-                        <span className="text-gray-400">
+            <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4">
+                <div className="bg-white rounded-xl p-6 border border-gray-100 shadow-[0_2px_10px_rgba(0,0,0,0.02)]">
+                    <div className="flex items-center justify-between mb-8">
+                        <h3 className="text-sm font-bold text-gray-900">Membres totaux</h3>
+                        <span className="text-gray-300">
                             <Icons.Info />
                         </span>
                     </div>
-                    <div className="text-4xl font-bold text-gray-900 min-h-[40px] flex items-center">
+                    <div className="text-3xl font-bold text-gray-900 min-h-[40px] flex items-center">
                         {loading ? <Loader /> : stats.total}
                     </div>
-                    <p className="text-sm text-gray-500 mt-2">
-                        {loading ? '...' : `${stats.active} actifs`}
-                    </p>
                 </div>
 
-                <div className="bg-white rounded-xl p-6 border border-gray-200">
-                    <div className="flex items-center justify-between mb-4">
-                        <h3 className="text-sm font-semibold text-gray-500 uppercase tracking-wider">Invités récents</h3>
-                        <span className="text-gray-400">
+                <div className="bg-white rounded-xl p-6 border border-gray-100 shadow-[0_2px_10px_rgba(0,0,0,0.02)]">
+                    <div className="flex items-center justify-between mb-8">
+                        <h3 className="text-sm font-bold text-gray-900">Invités récents</h3>
+                        <span className="text-gray-300">
                             <Icons.Info />
                         </span>
                     </div>
-                    <p className="text-4xl font-bold text-gray-900">0</p>
-                    <p className="text-sm text-gray-500 mt-2">7 derniers jours</p>
+                    <p className="text-3xl font-bold text-gray-900">0</p>
                 </div>
 
-                <div className="bg-white rounded-xl p-6 border border-gray-200">
-                    <div className="flex items-center justify-between mb-4">
-                        <h3 className="text-sm font-semibold text-gray-500 uppercase tracking-wider">Événements</h3>
-                        <span className="text-gray-400">
+                <div className="bg-white rounded-xl p-6 border border-gray-100 shadow-[0_2px_10px_rgba(0,0,0,0.02)]">
+                    <div className="flex items-center justify-between mb-8">
+                        <h3 className="text-sm font-bold text-gray-900">Événements</h3>
+                        <span className="text-gray-300">
                             <Icons.Info />
                         </span>
                     </div>
-                    <p className="text-4xl font-bold text-gray-900">0</p>
-                    <p className="text-sm text-gray-500 mt-2">À venir ce mois-ci</p>
+                    <p className="text-3xl font-bold text-gray-900">0</p>
                 </div>
 
-                <div className="bg-white rounded-xl p-6 border border-gray-200">
-                    <div className="flex items-center justify-between mb-4">
-                        <h3 className="text-sm font-semibold text-gray-500 uppercase tracking-wider">Dîmes du mois</h3>
-                        <span className="text-gray-400">
-                            <Icons.Money />
+                <div className="bg-white rounded-xl p-6 border border-gray-100 shadow-[0_2px_10px_rgba(0,0,0,0.02)]">
+                    <div className="flex items-center justify-between mb-8">
+                        <h3 className="text-sm font-bold text-gray-900">Dîmes du mois</h3>
+                        <span className="text-gray-300">
+                            <Icons.Info />
                         </span>
                     </div>
-                    <div className="text-4xl font-bold text-gray-900 min-h-[40px] flex items-center">
+                    <div className="text-3xl font-bold text-gray-900 min-h-[40px] flex items-center">
                         {loading ? <Loader /> : formatCurrency(titheStats.thisMonth)}
                     </div>
-                    <p className="text-sm text-gray-500 mt-2">
-                        Total: {loading ? '...' : formatCurrency(titheStats.totalAmount)}
-                    </p>
                 </div>
             </div>
         </div>

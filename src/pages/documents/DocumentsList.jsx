@@ -113,7 +113,7 @@ export default function DocumentsList() {
                 </div>
                 <Link
                     to="/documents/new"
-                    className="flex items-center gap-2 bg-primary text-white px-4 py-2.5 rounded-xl font-medium hover:bg-primary-dark shadow-sm transition-all self-start sm:self-auto"
+                    className="flex items-center gap-2 bg-primary text-black px-4 py-2.5 rounded-xl font-medium hover:bg-primary-dark shadow-sm transition-all self-start sm:self-auto"
                 >
                     <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                         <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 4v16m8-8H4" />
@@ -149,7 +149,7 @@ export default function DocumentsList() {
                     <button
                         key={stat.label}
                         onClick={() => stat.filterKey !== null && setFilters(f => ({ ...f, file_type: f.file_type === stat.filterKey ? '' : stat.filterKey }))}
-                        className={`${stat.color} rounded-2xl p-4 text-left transition-all hover:shadow-md ${stat.filterKey && filters.file_type === stat.filterKey ? 'ring-2 ring-offset-1' : ''
+                        className={`${stat.color} rounded-xl p-4 text-left transition-all hover:shadow-md ${stat.filterKey && filters.file_type === stat.filterKey ? 'ring-2 ring-offset-1' : ''
                             }`}
                     >
                         <div className="text-2xl mb-1">{stat.icon}</div>
@@ -160,7 +160,7 @@ export default function DocumentsList() {
             </div>
 
             {/* Filters */}
-            <div className="bg-white rounded-2xl p-5 border border-gray-100 shadow-sm">
+            <div className="bg-white rounded-xl p-5 border border-gray-100 shadow-sm">
                 <div className="flex flex-wrap gap-3 items-end">
                     <div className="flex-1 min-w-[200px]">
                         <label className="block text-xs font-medium text-gray-500 mb-1">Recherche</label>
@@ -216,19 +216,19 @@ export default function DocumentsList() {
             </div>
 
             {/* Documents list */}
-            <div className="bg-white rounded-2xl border border-gray-100 shadow-sm overflow-hidden">
+            <div className="bg-white rounded-xl border border-gray-100 shadow-sm overflow-hidden">
                 {loading ? (
                     <div className="flex items-center justify-center py-16">
                         <div className="w-8 h-8 border-2 border-primary border-t-transparent rounded-full animate-spin" />
                     </div>
                 ) : documents.length === 0 ? (
                     <div className="text-center py-16 px-6">
-                        <div className="w-16 h-16 bg-amber-50 rounded-2xl flex items-center justify-center mx-auto mb-4">
+                        <div className="w-16 h-16 bg-amber-50 rounded-xl flex items-center justify-center mx-auto mb-4">
                             <svg className="w-8 h-8 text-amber-400" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth={1.5} d="M3 7v10a2 2 0 002 2h14a2 2 0 002-2V9a2 2 0 00-2-2h-6l-2-2H5a2 2 0 00-2 2z" /></svg>
                         </div>
                         <h3 className="text-lg font-semibold text-gray-900 mb-1">Aucun document</h3>
                         <p className="text-gray-500 text-sm mb-4">Commencez par téléverser votre premier document.</p>
-                        <Link to="/documents/new" className="inline-flex items-center gap-2 bg-primary text-white px-5 py-2.5 rounded-xl font-medium hover:bg-primary-dark transition-all shadow-sm">
+                        <Link to="/documents/new" className="inline-flex items-center gap-2 bg-primary text-black px-5 py-2.5 rounded-xl font-medium hover:bg-primary-dark transition-all shadow-sm">
                             <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                                 <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 4v16m8-8H4" />
                             </svg>
@@ -273,7 +273,7 @@ export default function DocumentsList() {
                                             href={doc.file_url}
                                             target="_blank"
                                             rel="noopener noreferrer"
-                                            className="p-2 text-gray-400 hover:text-blue-500 hover:bg-blue-50 rounded-lg transition-all"
+                                            className="p-2 text-gray-400 hover:text-blue-500 hover:bg-blue-50 rounded-xl transition-all"
                                             title="Ouvrir"
                                         >
                                             <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
@@ -283,7 +283,7 @@ export default function DocumentsList() {
                                     )}
                                     <button
                                         onClick={() => navigate(`/documents/${doc.id}/edit`)}
-                                        className="p-2 text-gray-400 hover:text-primary hover:bg-primary/5 rounded-lg transition-all"
+                                        className="p-2 text-gray-400 hover:text-primary hover:bg-primary/5 rounded-xl transition-all"
                                         title="Modifier"
                                     >
                                         <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
@@ -292,7 +292,7 @@ export default function DocumentsList() {
                                     </button>
                                     <button
                                         onClick={() => handleDelete(doc)}
-                                        className="p-2 text-gray-400 hover:text-red-500 hover:bg-red-50 rounded-lg transition-all"
+                                        className="p-2 text-gray-400 hover:text-red-500 hover:bg-red-50 rounded-xl transition-all"
                                         title="Supprimer"
                                     >
                                         <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
@@ -310,10 +310,10 @@ export default function DocumentsList() {
             {showFolderModal && (
                 <div className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-black/40 backdrop-blur-sm"
                     onClick={e => e.target === e.currentTarget && setShowFolderModal(false)}>
-                    <div className="bg-white rounded-2xl w-full max-w-md shadow-2xl p-6 space-y-5">
+                    <div className="bg-white rounded-xl w-full max-w-md shadow-2xl p-6 space-y-5">
                         <div className="flex items-center justify-between">
                             <h2 className="text-lg font-bold text-gray-900">Gestion des dossiers</h2>
-                            <button onClick={() => setShowFolderModal(false)} className="p-2 text-gray-400 hover:text-gray-600 rounded-lg">
+                            <button onClick={() => setShowFolderModal(false)} className="p-2 text-gray-400 hover:text-gray-600 rounded-xl">
                                 <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                                     <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M6 18L18 6M6 6l12 12" />
                                 </svg>
@@ -332,7 +332,7 @@ export default function DocumentsList() {
                             <button
                                 type="submit"
                                 disabled={folderSaving || !folderName.trim()}
-                                className="px-4 py-2 bg-primary text-white rounded-xl text-sm font-medium hover:bg-primary-dark disabled:opacity-50 transition-all"
+                                className="px-4 py-2 bg-primary text-black rounded-xl text-sm font-medium hover:bg-primary-dark disabled:opacity-50 transition-all"
                             >
                                 {folderSaving ? '…' : 'Créer'}
                             </button>
@@ -350,7 +350,7 @@ export default function DocumentsList() {
                                     <span className="flex-1 text-sm font-medium text-gray-700">{folder.name}</span>
                                     <button
                                         onClick={() => handleDeleteFolder(folder)}
-                                        className="p-1 text-gray-400 hover:text-red-500 hover:bg-red-50 rounded-lg transition-all"
+                                        className="p-1 text-gray-400 hover:text-red-500 hover:bg-red-50 rounded-xl transition-all"
                                     >
                                         <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                                             <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M19 7l-.867 12.142A2 2 0 0116.138 21H7.862a2 2 0 01-1.995-1.858L5 7m5 4v6m4-6v6m1-10V4a1 1 0 00-1-1h-4a1 1 0 00-1 1v3M4 7h16" />

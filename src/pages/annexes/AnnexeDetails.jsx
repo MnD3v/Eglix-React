@@ -77,9 +77,9 @@ export default function AnnexeDetails() {
             </div>
 
             {/* Header */}
-            <div className="bg-white border border-gray-200 rounded-2xl p-6 md:p-8">
+            <div className="bg-white border border-gray-200 rounded-xl p-6 md:p-8">
                 <div className="flex flex-col sm:flex-row sm:items-start gap-5">
-                    <div className="w-14 h-14 rounded-2xl bg-gray-900 text-white flex items-center justify-center flex-shrink-0">
+                    <div className="w-14 h-14 rounded-xl bg-gray-900 text-white flex items-center justify-center flex-shrink-0">
                         <Ico.Building />
                     </div>
                     <div className="flex-1 min-w-0">
@@ -92,7 +92,7 @@ export default function AnnexeDetails() {
                                 </div>
                                 {annexe.description && <p className="text-sm text-gray-500 mt-2 max-w-xl">{annexe.description}</p>}
                             </div>
-                            <Link to={`/annexes/${id}/edit`} className="inline-flex items-center gap-2 text-sm font-medium text-gray-600 hover:text-black border border-gray-200 hover:border-gray-300 px-3 py-2 rounded-lg transition-all flex-shrink-0">
+                            <Link to={`/annexes/${id}/edit`} className="inline-flex items-center gap-2 text-sm font-medium text-gray-600 hover:text-black border border-gray-200 hover:border-gray-300 px-3 py-2 rounded-xl transition-all flex-shrink-0">
                                 <Ico.Pencil /> Modifier
                             </Link>
                         </div>
@@ -118,7 +118,7 @@ export default function AnnexeDetails() {
             </div>
 
             {/* Tabs */}
-            <div className="bg-white border border-gray-200 rounded-2xl overflow-hidden">
+            <div className="bg-white border border-gray-200 rounded-xl overflow-hidden">
                 {/* Tab Bar */}
                 <div className="flex items-center justify-between border-b border-gray-200 px-2 overflow-x-auto">
                     <div className="flex">
@@ -135,7 +135,7 @@ export default function AnnexeDetails() {
                     </div>
                     {/* Add button in tab bar */}
                     <button onClick={() => setSlideOpen(true)}
-                        className="flex items-center gap-1.5 text-sm font-semibold bg-black text-white px-3 py-1.5 rounded-lg hover:bg-gray-800 transition-colors flex-shrink-0 mr-2">
+                        className="flex items-center gap-1.5 text-sm font-semibold bg-black text-white px-3 py-1.5 rounded-xl hover:bg-gray-800 transition-colors flex-shrink-0 mr-2">
                         <Ico.Plus />{currentTab?.addLabel}
                     </button>
                 </div>
@@ -242,7 +242,7 @@ function FinanceTab({ annexeId, type }) {
                                 {row.description && <span className="text-xs text-gray-400 truncate">· {row.description}</span>}
                             </div>
                         </div>
-                        <span className={`text-sm font-bold px-3 py-1 rounded-lg flex-shrink-0 ${colorMap[type]}`}>
+                        <span className={`text-sm font-bold px-3 py-1 rounded-xl flex-shrink-0 ${colorMap[type]}`}>
                             {formatCurrency(row.amount)}
                         </span>
                     </div>
@@ -260,7 +260,7 @@ function TabShell({ search, onSearch, placeholder, count, empty, children }) {
             <div className="relative max-w-sm">
                 <span className="absolute left-3 top-1/2 -translate-y-1/2 text-gray-400"><Ico.Search /></span>
                 <input type="text" value={search} onChange={e => onSearch(e.target.value)} placeholder={placeholder}
-                    className="w-full pl-9 pr-4 py-2 bg-gray-50 border border-gray-200 rounded-lg text-sm focus:outline-none focus:ring-2 focus:ring-black/10 focus:bg-white transition-all" />
+                    className="w-full pl-9 pr-4 py-2 bg-gray-50 border border-gray-200 rounded-xl text-sm focus:outline-none focus:ring-2 focus:ring-black/10 focus:bg-white transition-all" />
             </div>
             <p className="text-xs text-gray-400 font-medium">{count} résultat{count !== 1 ? 's' : ''}</p>
             {count === 0

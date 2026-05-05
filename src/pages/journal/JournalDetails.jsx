@@ -63,13 +63,13 @@ export default function JournalDetails() {
             </div>
 
             {/* Entry card */}
-            <div className="bg-white rounded-2xl border border-gray-100 shadow-sm overflow-hidden">
+            <div className="bg-white rounded-xl border border-gray-100 shadow-sm overflow-hidden">
                 {/* Header */}
                 <div className="bg-gradient-to-br from-indigo-50 to-blue-50 px-6 py-6 border-b border-gray-100">
                     <div className="flex items-start justify-between gap-4">
                         <div>
                             {entry.category && (
-                                <span className="inline-flex items-center px-2.5 py-1 rounded-lg bg-indigo-100 text-indigo-700 text-xs font-medium mb-2">
+                                <span className="inline-flex items-center px-2.5 py-1 rounded-xl bg-indigo-100 text-indigo-700 text-xs font-medium mb-2">
                                     {entry.category}
                                 </span>
                             )}
@@ -79,7 +79,7 @@ export default function JournalDetails() {
                         <div className="flex items-center gap-2">
                             <button
                                 onClick={() => navigate(`/journal/${id}/edit`)}
-                                className="p-2 text-gray-400 hover:text-primary hover:bg-white rounded-lg transition-all"
+                                className="p-2 text-gray-400 hover:text-primary hover:bg-white rounded-xl transition-all"
                                 title="Modifier"
                             >
                                 <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
@@ -88,7 +88,7 @@ export default function JournalDetails() {
                             </button>
                             <button
                                 onClick={handleDelete}
-                                className="p-2 text-gray-400 hover:text-red-500 hover:bg-white rounded-lg transition-all"
+                                className="p-2 text-gray-400 hover:text-red-500 hover:bg-white rounded-xl transition-all"
                                 title="Supprimer"
                             >
                                 <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">

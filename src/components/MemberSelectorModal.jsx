@@ -34,7 +34,7 @@ export default function MemberSelectorModal({ isOpen, onClose, onSelect, members
             {/* Modal positioning container */}
             <div className="flex min-h-full items-center justify-center p-4 text-center sm:p-0">
                 {/* Modal panel */}
-                <div className="relative transform overflow-hidden rounded-2xl bg-white text-left shadow-xl transition-all sm:my-8 sm:w-full sm:max-w-lg">
+                <div className="relative transform overflow-hidden rounded-xl bg-white text-left shadow-xl transition-all sm:my-8 sm:w-full sm:max-w-lg">
                     <div className="bg-white px-4 pt-5 pb-4 sm:p-6 sm:pb-4">
                         <div className="w-full">
                             <h3 className="text-lg font-medium leading-6 text-gray-900 mb-4" id="modal-title">
@@ -69,7 +69,7 @@ export default function MemberSelectorModal({ isOpen, onClose, onSelect, members
                                                     onSelect(member);
                                                     onClose();
                                                 }}
-                                                className="py-3 px-2 hover:bg-gray-50 cursor-pointer rounded-lg flex items-center gap-3 transition-colors"
+                                                className="py-3 px-2 hover:bg-gray-50 cursor-pointer rounded-xl flex items-center gap-3 transition-colors"
                                             >
                                                 <div className="flex-shrink-0 h-8 w-8 rounded-full bg-primary/10 flex items-center justify-center text-primary font-bold text-xs">
                                                     {member.first_name[0]}{member.last_name[0]}

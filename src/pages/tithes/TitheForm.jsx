@@ -188,7 +188,7 @@ export default function TitheForm() {
                 </div>
             </div>
 
-            <div className="bg-white rounded-2xl p-8 shadow-sm border border-gray-100">
+            <div className="bg-white rounded-xl p-8 shadow-sm border border-gray-100">
                 <form onSubmit={handleSubmit} className="space-y-6">
                     {/* Montant et Date */}
                     <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
@@ -235,7 +235,7 @@ export default function TitheForm() {
                                     key={opt.key}
                                     type="button"
                                     onClick={() => handleDonorMode(opt.key)}
-                                    className={`flex-1 py-2 px-3 rounded-lg text-sm font-medium border transition-all ${
+                                    className={`flex-1 py-2 px-3 rounded-xl text-sm font-medium border transition-all ${
                                         donorMode === opt.key
                                             ? 'bg-gray-900 text-white border-gray-900'
                                             : 'bg-gray-50 text-gray-600 border-gray-200 hover:bg-gray-100'

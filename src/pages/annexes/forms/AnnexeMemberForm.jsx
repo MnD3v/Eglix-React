@@ -10,7 +10,7 @@ const F = ({ label, name, type = 'text', value, onChange, placeholder = '', requ
         <input
             type={type} name={name} value={value || ''} onChange={onChange}
             placeholder={placeholder} required={required}
-            className="w-full px-3 py-2.5 border border-gray-200 rounded-lg text-sm bg-gray-50 focus:bg-white focus:outline-none focus:ring-2 focus:ring-black/10 transition-all"
+            className="w-full px-3 py-2.5 border border-gray-200 rounded-xl text-sm bg-gray-50 focus:bg-white focus:outline-none focus:ring-2 focus:ring-black/10 transition-all"
         />
     </div>
 );
@@ -20,7 +20,7 @@ const S = ({ label, name, value, onChange, options }) => (
         <label className="block text-sm font-medium text-gray-700 mb-1">{label}</label>
         <select
             name={name} value={value} onChange={onChange}
-            className="w-full px-3 py-2.5 border border-gray-200 rounded-lg text-sm bg-gray-50 focus:bg-white focus:outline-none focus:ring-2 focus:ring-black/10 transition-all appearance-none"
+            className="w-full px-3 py-2.5 border border-gray-200 rounded-xl text-sm bg-gray-50 focus:bg-white focus:outline-none focus:ring-2 focus:ring-black/10 transition-all appearance-none"
         >
             {options.map(o => <option key={o.value} value={o.value}>{o.label}</option>)}
         </select>
@@ -76,7 +76,7 @@ export default function AnnexeMemberForm({ churchId, annexeId, onSuccess, onCanc
     return (
         <form onSubmit={handleSubmit} className="space-y-4">
             {error && (
-                <div className="bg-red-50 border border-red-200 text-red-700 px-3 py-2 rounded-lg text-sm">{error}</div>
+                <div className="bg-red-50 border border-red-200 text-red-700 px-3 py-2 rounded-xl text-sm">{error}</div>
             )}
 
             {/* Photo */}
@@ -88,7 +88,7 @@ export default function AnnexeMemberForm({ churchId, annexeId, onSuccess, onCanc
                     }
                 </div>
                 <div>
-                    <label className="cursor-pointer inline-flex items-center gap-2 text-sm font-medium text-gray-700 hover:text-black border border-gray-200 px-3 py-2 rounded-lg hover:bg-gray-50 transition-all">
+                    <label className="cursor-pointer inline-flex items-center gap-2 text-sm font-medium text-gray-700 hover:text-black border border-gray-200 px-3 py-2 rounded-xl hover:bg-gray-50 transition-all">
                         <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M4 16v1a3 3 0 003 3h10a3 3 0 003-3v-1m-4-8l-4-4m0 0L8 8m4-4v12" /></svg>
                         {uploading ? 'Téléchargement...' : 'Ajouter une photo'}
                         <input type="file" accept="image/*" onChange={handlePhoto} className="hidden" disabled={uploading} />
@@ -147,18 +147,18 @@ export default function AnnexeMemberForm({ churchId, annexeId, onSuccess, onCanc
                 <textarea
                     name="notes" value={form.notes || ''} onChange={handleChange} rows={3}
                     placeholder="Informations complémentaires..."
-                    className="w-full px-3 py-2.5 border border-gray-200 rounded-lg text-sm bg-gray-50 focus:bg-white focus:outline-none focus:ring-2 focus:ring-black/10 transition-all resize-none"
+                    className="w-full px-3 py-2.5 border border-gray-200 rounded-xl text-sm bg-gray-50 focus:bg-white focus:outline-none focus:ring-2 focus:ring-black/10 transition-all resize-none"
                 />
             </div>
 
             {/* Actions */}
             <div className="flex gap-3 pt-4 border-t border-gray-100 sticky bottom-0 bg-white pb-2">
                 <button type="button" onClick={onCancel}
-                    className="flex-1 px-4 py-2.5 border border-gray-200 rounded-lg text-sm font-medium text-gray-600 hover:bg-gray-50 transition-colors">
+                    className="flex-1 px-4 py-2.5 border border-gray-200 rounded-xl text-sm font-medium text-gray-600 hover:bg-gray-50 transition-colors">
                     Annuler
                 </button>
                 <button type="submit" disabled={loading || uploading}
-                    className="flex-1 px-4 py-2.5 bg-black text-white rounded-lg text-sm font-semibold hover:bg-gray-800 transition-colors disabled:opacity-50 flex items-center justify-center gap-2">
+                    className="flex-1 px-4 py-2.5 bg-black text-white rounded-xl text-sm font-semibold hover:bg-gray-800 transition-colors disabled:opacity-50 flex items-center justify-center gap-2">
                     {loading && <Loader />} Enregistrer
                 </button>
             </div>

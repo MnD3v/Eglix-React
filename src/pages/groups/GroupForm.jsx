@@ -116,7 +116,7 @@ export default function GroupForm() {
 
             <form onSubmit={handleSubmit} className="space-y-6">
                 {/* Nom */}
-                <div className="bg-white rounded-2xl p-6 border border-gray-100 shadow-sm space-y-5">
+                <div className="bg-white rounded-xl p-6 border border-gray-100 shadow-sm space-y-5">
                     <h2 className="font-semibold text-gray-900">Informations du groupe</h2>
 
                     <div className="space-y-1.5">

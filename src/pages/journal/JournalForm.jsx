@@ -96,7 +96,7 @@ export default function JournalForm() {
                 <div className="bg-red-50 border border-red-200 rounded-xl p-4 text-sm text-red-700">{error}</div>
             )}
 
-            <form onSubmit={handleSubmit} className="bg-white rounded-2xl p-6 border border-gray-100 shadow-sm space-y-5">
+            <form onSubmit={handleSubmit} className="bg-white rounded-xl p-6 border border-gray-100 shadow-sm space-y-5">
                 {/* Titre */}
                 <div>
                     <label className="block text-sm font-medium text-gray-700 mb-1">
@@ -122,8 +122,8 @@ export default function JournalForm() {
                                 key={cat}
                                 type="button"
                                 onClick={() => setFormData(f => ({ ...f, category: f.category === cat ? '' : cat }))}
-                                className={`px-3 py-1 rounded-lg text-xs font-medium border transition-all ${formData.category === cat
-                                        ? 'bg-primary text-white border-primary'
+                                className={`px-3 py-1 rounded-xl text-xs font-medium border transition-all ${formData.category === cat
+                                        ? 'bg-primary text-black border-primary'
                                         : 'border-gray-200 text-gray-600 hover:border-gray-300 hover:bg-gray-50'
                                     }`}
                             >
@@ -181,7 +181,7 @@ export default function JournalForm() {
                     <button
                         type="submit"
                         disabled={loading}
-                        className="flex-1 px-4 py-2.5 bg-primary text-white rounded-xl text-sm font-medium hover:bg-primary-dark shadow-sm transition-all disabled:opacity-50"
+                        className="flex-1 px-4 py-2.5 bg-primary text-black rounded-xl text-sm font-medium hover:bg-primary-dark shadow-sm transition-all disabled:opacity-50"
                     >
                         {loading ? 'Enregistrement...' : (isEdit ? 'Mettre à jour' : 'Enregistrer')}
                     </button>

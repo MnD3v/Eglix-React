@@ -140,7 +140,7 @@ export default function Reports() {
             </div>
 
             {/* Period filter card */}
-            <div className="bg-white rounded-2xl p-5 border border-gray-100 shadow-sm">
+            <div className="bg-white rounded-xl p-5 border border-gray-100 shadow-sm">
                 <h2 className="text-sm font-semibold text-gray-700 mb-3">Période d'analyse</h2>
                 <div className="flex flex-wrap gap-3 items-end mb-4">
                     <div className="min-w-[150px]">
@@ -168,7 +168,7 @@ export default function Reports() {
                         <button
                             key={p.value}
                             onClick={() => applyPreset(p.value)}
-                            className="px-3 py-1.5 text-xs font-medium rounded-lg border border-gray-200 text-gray-600 hover:border-primary hover:text-primary hover:bg-primary/5 transition-all"
+                            className="px-3 py-1.5 text-xs font-medium rounded-xl border border-gray-200 text-gray-600 hover:border-primary hover:text-primary hover:bg-primary/5 transition-all"
                         >
                             {p.label}
                         </button>
@@ -184,7 +184,7 @@ export default function Reports() {
                     { label: 'Solde net', value: balance, color: balance >= 0 ? 'text-blue-700 bg-blue-50 border-blue-100' : 'text-red-700 bg-red-50 border-red-100' },
                     { label: 'Membres actifs', value: null, color: 'text-indigo-700 bg-indigo-50 border-indigo-100' },
                 ].slice(0, 3).map((kpi, i) => (
-                    <div key={i} className={`rounded-2xl border p-4 ${kpi.color}`}>
+                    <div key={i} className={`rounded-xl border p-4 ${kpi.color}`}>
                         <p className="text-xs font-medium opacity-70 mb-1">{kpi.label}</p>
                         <p className="text-lg font-bold leading-tight">{loading ? '...' : formatAmount(kpi.value)}</p>
                     </div>
@@ -192,7 +192,7 @@ export default function Reports() {
             </div>
 
             {/* Individual Reports */}
-            <div className="bg-white rounded-2xl border border-gray-100 shadow-sm overflow-hidden">
+            <div className="bg-white rounded-xl border border-gray-100 shadow-sm overflow-hidden">
                 <div className="p-5 border-b border-gray-50">
                     <h2 className="text-sm font-semibold text-gray-700">Rapports détaillés</h2>
                 </div>
@@ -216,7 +216,7 @@ export default function Reports() {
                             {/* Link */}
                             <Link
                                 to={report.link}
-                                className="flex-shrink-0 px-3 py-1.5 text-xs font-medium border border-gray-200 rounded-lg text-gray-600 hover:border-primary hover:text-primary hover:bg-primary/5 transition-all"
+                                className="flex-shrink-0 px-3 py-1.5 text-xs font-medium border border-gray-200 rounded-xl text-gray-600 hover:border-primary hover:text-primary hover:bg-primary/5 transition-all"
                             >
                                 Voir
                             </Link>

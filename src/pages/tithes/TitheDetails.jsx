@@ -89,7 +89,7 @@ export default function TitheDetails() {
             <p className="mt-2 text-gray-500">{error || "Dîme introuvable"}</p>
             <button
                 onClick={() => navigate('/tithes')}
-                className="mt-6 px-4 py-2 bg-white border border-gray-300 rounded-lg text-sm font-medium text-gray-700 hover:bg-gray-50"
+                className="mt-6 px-4 py-2 bg-white border border-gray-300 rounded-xl text-sm font-medium text-gray-700 hover:bg-gray-50"
             >
                 Retour à la liste
             </button>
@@ -129,7 +129,7 @@ export default function TitheDetails() {
                 </div>
             </div>
 
-            <div className="bg-white rounded-2xl shadow-sm border border-gray-100 overflow-hidden">
+            <div className="bg-white rounded-xl shadow-sm border border-gray-100 overflow-hidden">
                 {/* Main Amount Section */}
                 <div className="p-8 border-b border-gray-100 bg-gray-50/50 text-center">
                     <p className="text-sm font-medium text-gray-500 uppercase tracking-wider mb-2">Montant</p>

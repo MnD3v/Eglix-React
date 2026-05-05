@@ -125,7 +125,7 @@ export default function DocumentForm() {
             <form onSubmit={handleSubmit} className="space-y-5">
                 {/* File upload (create only) */}
                 {!isEdit && (
-                    <div className="bg-white rounded-2xl p-6 border border-gray-100 shadow-sm space-y-4">
+                    <div className="bg-white rounded-xl p-6 border border-gray-100 shadow-sm space-y-4">
                         <h2 className="font-semibold text-gray-900">Fichier</h2>
 
                         {/* Drop zone */}
@@ -136,7 +136,7 @@ export default function DocumentForm() {
                         >
                             {previewUrl ? (
                                 <div className="space-y-2">
-                                    <img src={previewUrl} alt="preview" className="max-h-40 rounded-lg mx-auto object-contain shadow" />
+                                    <img src={previewUrl} alt="preview" className="max-h-40 rounded-xl mx-auto object-contain shadow" />
                                     <p className="text-sm font-medium text-gray-700">{selectedFile.name}</p>
                                     <p className="text-xs text-gray-400">{(selectedFile.size / 1024).toFixed(1)} KB</p>
                                 </div>
@@ -191,7 +191,7 @@ export default function DocumentForm() {
                 )}
 
                 {/* Info form */}
-                <div className="bg-white rounded-2xl p-6 border border-gray-100 shadow-sm space-y-4">
+                <div className="bg-white rounded-xl p-6 border border-gray-100 shadow-sm space-y-4">
                     <h2 className="font-semibold text-gray-900">Informations</h2>
 
                     <div>
@@ -267,7 +267,7 @@ export default function DocumentForm() {
                     <button
                         type="submit"
                         disabled={loading}
-                        className="flex-1 px-4 py-2.5 bg-primary text-white rounded-xl text-sm font-medium hover:bg-primary-dark shadow-sm transition-all disabled:opacity-50 flex items-center justify-center gap-2"
+                        className="flex-1 px-4 py-2.5 bg-primary text-black rounded-xl text-sm font-medium hover:bg-primary-dark shadow-sm transition-all disabled:opacity-50 flex items-center justify-center gap-2"
                     >
                         {loading ? (
                             <>

@@ -47,7 +47,7 @@ const Icons = {
             <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M15 12a3 3 0 11-6 0 3 3 0 016 0z" />
         </svg>
     ),
-    Logout: () => (
+    SignOut: () => (
         <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
             <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M17 16l4-4m0 0l-4-4m4 4H7m6 4v1a3 3 0 01-3 3H6a3 3 0 01-3-3V7a3 3 0 013-3h4a3 3 0 013 3v1" />
         </svg>
@@ -121,6 +121,16 @@ const Icons = {
         <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
             <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M19 21V5a2 2 0 00-2-2H7a2 2 0 00-2 2v16m14 0h2m-2 0h-5m-9 0H3m2 0h5M9 7h1m-1 4h1m4-4h1m-1 4h1m-5 10v-5a1 1 0 011-1h2a1 1 0 011 1v5m-4 0h4" />
         </svg>
+    ),
+    Plus: () => (
+        <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+            <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 4v16m8-8H4" />
+        </svg>
+    ),
+    User: () => (
+        <svg className="w-5 h-5" fill="currentColor" viewBox="0 0 20 20">
+            <path fillRule="evenodd" d="M10 9a3 3 0 100-6 3 3 0 000 6zm-7 9a7 7 0 1114 0H3z" clipRule="evenodd" />
+        </svg>
     )
 };
 
@@ -131,6 +141,9 @@ export default function Layout() {
     const { currentChurch } = useChurch();
     const [isSidebarOpen, setIsSidebarOpen] = useState(false);
     const [isChurchModalOpen, setIsChurchModalOpen] = useState(false);
+
+    const userName = user?.email?.split('@')[0] || 'Utilisateur';
+    const userEmail = user?.email || '';
 
     const navigation = [
         { name: 'Accueil', href: '/', icon: Icons.Home },
@@ -144,7 +157,6 @@ export default function Layout() {
         { name: 'Dépenses', href: '/expenses', icon: Icons.Expense },
         { name: 'Projets', href: '/projects', icon: Icons.Project },
         { name: 'Journal', href: '/journal', icon: Icons.Journal },
-        { name: 'Rapports', href: '/reports', icon: Icons.Reports },
         { name: 'Administration', href: '/administration', icon: Icons.AdminBoard },
         { name: 'Documents', href: '/documents', icon: Icons.Documents },
         { name: 'Paramètres', href: '/settings', icon: Icons.Settings },
@@ -156,21 +168,20 @@ export default function Layout() {
     };
 
     const ChurchSwitcher = () => (
-        <div className="px-3 mb-2">
+        <div className="px-4 mb-4">
             <button
                 onClick={() => setIsChurchModalOpen(true)}
-                className="w-full flex items-center gap-3 px-3 py-2.5 rounded-xl bg-gray-50 hover:bg-gray-100 border border-gray-200 transition-all group"
+                className="w-full flex items-center gap-3 p-2 rounded-xl bg-white border border-gray-100 hover:border-gray-200 transition-all group"
             >
-                <div className="w-8 h-8 rounded-lg bg-primary text-white flex items-center justify-center flex-shrink-0 shadow-sm">
+                <div className="w-10 h-10 rounded-xl bg-black text-white flex items-center justify-center flex-shrink-0 shadow-sm">
                     {currentChurch?.logo_url ? (
-                        <img src={currentChurch.logo_url} alt="" className="w-full h-full object-cover rounded-lg" />
+                        <img src={currentChurch.logo_url} alt="" className="w-full h-full object-cover rounded-xl" />
                     ) : (
-                        <span className="font-bold text-sm">{currentChurch?.name?.[0]?.toUpperCase() || 'E'}</span>
+                        <span className="font-bold text-lg">{currentChurch?.name?.[0]?.toUpperCase() || 'E'}</span>
                     )}
                 </div>
                 <div className="flex-1 min-w-0 text-left">
                     <p className="text-sm font-bold text-gray-900 truncate">{currentChurch?.name || 'Sélectionner'}</p>
-                    <p className="text-xs text-gray-500 truncate">Changer d'église</p>
                 </div>
                 <div className="text-gray-400 group-hover:text-gray-600">
                     <Icons.ChevronDown />
@@ -185,19 +196,12 @@ export default function Layout() {
             <aside className="hidden md:flex md:flex-col w-64 bg-white border-r border-gray-200 fixed h-full">
                 {/* Logo */}
                 <div className="h-16 flex items-center px-6 border-b border-gray-200">
-                    <div className="flex items-center gap-2">
-                        <div className="w-8 h-8 bg-black rounded-lg flex items-center justify-center">
-                            <span className="text-white font-bold text-sm">E</span>
-                        </div>
-                        <span className="font-bold text-xl">Eglix</span>
-                    </div>
+                    <img src="/images/eglix-black.png" alt="Eglix Logo" className="h-8 w-auto" />
                 </div>
 
                 {/* Navigation */}
-                <nav className="flex-1 px-3 py-4 space-y-1 overflow-y-auto">
+                <nav className="flex-1 px-4 py-4 space-y-0.5 overflow-y-auto">
                     <ChurchSwitcher />
-
-                    <div className="my-4 border-t border-gray-100"></div>
 
                     {navigation.map((item) => {
                         const isActive = location.pathname === item.href ||
@@ -207,9 +211,9 @@ export default function Layout() {
                             <Link
                                 key={item.name}
                                 to={item.href}
-                                className={`flex items-center gap-3 px-3 py-2.5 rounded-lg text-sm font-medium transition-all ${isActive
-                                    ? 'bg-primary/5 text-primary'
-                                    : 'text-gray-600 hover:bg-gray-50 hover:text-gray-900'
+                                className={`flex items-center gap-3 px-3 py-2 rounded-lg text-sm font-medium transition-all ${isActive
+                                    ? 'bg-gray-100 text-gray-900 font-bold'
+                                    : 'text-gray-500 hover:bg-gray-50 hover:text-gray-900'
                                     }`}
                             >
                                 <Icon />
@@ -219,24 +223,6 @@ export default function Layout() {
                     })}
                 </nav>
 
-                {/* User Section */}
-                <div className="p-4 border-t border-gray-200">
-                    <div className="flex items-center gap-3 px-3 py-2">
-                        <div className="w-8 h-8 rounded-full bg-primary text-white flex items-center justify-center text-sm font-semibold">
-                            {user?.email?.[0]?.toUpperCase() || 'U'}
-                        </div>
-                        <div className="flex-1 min-w-0">
-                            <p className="text-sm font-medium text-gray-900 truncate">{user?.email}</p>
-                        </div>
-                        <button
-                            onClick={handleSignOut}
-                            className="p-1 hover:bg-gray-100 rounded transition-colors"
-                            title="Déconnexion"
-                        >
-                            <Icons.Logout />
-                        </button>
-                    </div>
-                </div>
             </aside>
 
             {/* Mobile Sidebar Overlay */}
@@ -252,12 +238,7 @@ export default function Layout() {
                 }`}>
                 {/* Logo */}
                 <div className="h-16 flex items-center justify-between px-6 border-b border-gray-200">
-                    <div className="flex items-center gap-2">
-                        <div className="w-8 h-8 bg-black rounded-lg flex items-center justify-center">
-                            <span className="text-white font-bold text-sm">E</span>
-                        </div>
-                        <span className="font-bold text-xl">Eglix</span>
-                    </div>
+                    <img src="/images/eglix-black.png" alt="Eglix Logo" className="h-8 w-auto" />
                     <button onClick={() => setIsSidebarOpen(false)}>
                         <Icons.Close />
                     </button>
@@ -278,7 +259,7 @@ export default function Layout() {
                                 key={item.name}
                                 to={item.href}
                                 onClick={() => setIsSidebarOpen(false)}
-                                className={`flex items-center gap-3 px-3 py-2.5 rounded-lg text-sm font-medium transition-all ${isActive
+                                className={`flex items-center gap-3 px-3 py-2.5 rounded-xl text-sm font-medium transition-all ${isActive
                                     ? 'bg-gray-100 text-gray-900'
                                     : 'text-gray-600 hover:bg-gray-50 hover:text-gray-900'
                                     }`}
@@ -299,37 +280,63 @@ export default function Layout() {
                         {/* Mobile Menu Button */}
                         <button
                             onClick={() => setIsSidebarOpen(true)}
-                            className="md:hidden p-2 hover:bg-gray-100 rounded-lg transition-colors text-gray-600"
+                            className="md:hidden p-2 hover:bg-gray-100 rounded-xl transition-colors text-gray-600"
                         >
                             <Icons.Menu />
                         </button>
 
                         {/* Search Bar */}
-                        <div className="flex-1 max-w-2xl mx-auto hidden md:block">
+                        <div className="flex-1 max-w-xl mx-auto hidden md:block px-4">
                             <div className="relative">
-                                <span className="absolute left-3 top-1/2 -translate-y-1/2 text-gray-400">
+                                <span className="absolute left-4 top-1/2 -translate-y-1/2 text-gray-400">
                                     <Icons.Search />
                                 </span>
                                 <input
                                     type="text"
-                                    placeholder="Rechercher..."
-                                    className="w-full pl-10 pr-4 py-2 bg-gray-50 border border-gray-200 rounded-lg text-sm focus:outline-none focus:ring-2 focus:ring-gray-200 focus:bg-white transition-all"
+                                    placeholder="Trouvez n'importe quoi : Appuyez sur ⌘K sur votre clavier"
+                                    className="w-full pl-12 pr-4 py-2 bg-gray-100/50 border border-transparent rounded-full text-sm focus:outline-none focus:ring-2 focus:ring-gray-200 focus:bg-white transition-all placeholder-gray-400"
                                 />
                             </div>
                         </div>
 
-                        {/* Right Actions */}
-                        <div className="flex items-center gap-2">
-                            <button className="p-2 hover:bg-gray-100 rounded-lg transition-colors hidden md:block text-gray-600">
-                                <Icons.Bell />
+                        {/* Top Right Actions */}
+                        <div className="flex items-center gap-3">
+                            <button className="w-10 h-10 flex items-center justify-center bg-gray-100 text-gray-600 rounded-full hover:bg-gray-200 transition-colors">
+                                <Icons.Plus />
                             </button>
-                            <button className="p-2 hover:bg-gray-100 rounded-lg transition-colors hidden md:block text-gray-600">
+                            <button className="w-10 h-10 flex items-center justify-center bg-gray-100 text-gray-600 rounded-full hover:bg-gray-200 transition-colors">
                                 <Icons.Grid />
                             </button>
-                            <div className="w-8 h-8 rounded-full bg-primary text-white flex items-center justify-center text-sm font-semibold md:hidden">
-                                {user?.email?.[0]?.toUpperCase() || 'U'}
+
+                            {/* User Menu */}
+                            <div className="relative group ml-1">
+                                <button className="w-10 h-10 flex items-center justify-center bg-gray-100 text-gray-900 rounded-full hover:bg-gray-200 transition-all">
+                                    <Icons.User />
+                                </button>
+
+                                {/* Dropdown Menu */}
+                                <div className="absolute right-0 top-full mt-2 w-56 bg-white rounded-xl shadow-xl border border-gray-100 opacity-0 invisible group-hover:opacity-100 group-hover:visible transition-all z-50 overflow-hidden">
+                                    <div className="px-4 py-3 border-b border-gray-50">
+                                        <p className="text-sm font-bold text-gray-900">{userName}</p>
+                                        <p className="text-xs text-gray-500 truncate">{userEmail}</p>
+                                    </div>
+                                    <div className="p-2">
+                                        <Link to="/settings" className="flex items-center gap-3 px-3 py-2 text-sm text-gray-600 hover:bg-gray-50 rounded-lg transition-colors">
+                                            <Icons.Settings />
+                                            Paramètres
+                                        </Link>
+                                        <button
+                                            onClick={handleSignOut}
+                                            className="w-full flex items-center gap-3 px-3 py-2 text-sm text-red-600 hover:bg-red-50 rounded-lg transition-colors"
+                                        >
+                                            <Icons.SignOut />
+                                            Déconnexion
+                                        </button>
+                                    </div>
+                                </div>
                             </div>
                         </div>
+
                     </div>
                 </header>
 

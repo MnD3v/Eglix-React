@@ -156,7 +156,7 @@ export default function MemberDetails() {
                 <div className="flex items-center gap-4">
                     <button
                         onClick={() => navigate('/members')}
-                        className="p-2 hover:bg-gray-100 rounded-lg transition-colors"
+                        className="p-2 hover:bg-gray-100 rounded-xl transition-colors"
                     >
                         <svg className="w-5 h-5 text-gray-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                             <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M15 19l-7-7 7-7" />
@@ -171,7 +171,7 @@ export default function MemberDetails() {
                 </div>
                 <Link
                     to={`/members/${id}/edit`}
-                    className="flex items-center gap-2 px-4 py-2 bg-primary text-white rounded-xl hover:bg-primary-dark transition-colors"
+                    className="flex items-center gap-2 px-4 py-2 bg-primary text-black rounded-xl hover:bg-primary-dark transition-colors"
                 >
                     <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                         <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M11 5H6a2 2 0 00-2 2v11a2 2 0 002 2h11a2 2 0 002-2v-5m-1.414-9.414a2 2 0 112.828 2.828L11.828 15H9v-2.828l8.586-8.586z" />
@@ -184,16 +184,16 @@ export default function MemberDetails() {
                 {/* Left Column - Member Info & Tithes */}
                 <div className="lg:col-span-2 space-y-6">
                     {/* Profile Card */}
-                    <div className="bg-white rounded-2xl p-6 border border-gray-100 shadow-sm">
+                    <div className="bg-white rounded-xl p-6 border border-gray-100 shadow-sm">
                         <div className="flex items-start gap-6">
                             {member.photo_url ? (
                                 <img
                                     src={member.photo_url}
                                     alt={`${member.first_name} ${member.last_name}`}
-                                    className="w-24 h-24 rounded-2xl object-cover"
+                                    className="w-24 h-24 rounded-xl object-cover"
                                 />
                             ) : (
-                                <div className="w-24 h-24 rounded-2xl bg-gradient-to-br from-gray-100 to-gray-200 flex items-center justify-center text-gray-500 font-bold text-3xl">
+                                <div className="w-24 h-24 rounded-xl bg-gradient-to-br from-gray-100 to-gray-200 flex items-center justify-center text-gray-500 font-bold text-3xl">
                                     {member.first_name[0]}{member.last_name[0]}
                                 </div>
                             )}
@@ -233,7 +233,7 @@ export default function MemberDetails() {
                     </div>
 
                     {/* Details Grid */}
-                    <div className="bg-white rounded-2xl p-6 border border-gray-100 shadow-sm">
+                    <div className="bg-white rounded-xl p-6 border border-gray-100 shadow-sm">
                         <h2 className="text-lg font-bold text-gray-900 mb-4">Informations Détaillées</h2>
                         <div className="grid grid-cols-1 md:grid-cols-2 gap-4 text-sm">
                             {member.birth_date && (
@@ -289,7 +289,7 @@ export default function MemberDetails() {
 
                     {/* Tithes Chart */}
                     {chartData.length > 0 && (
-                        <div className="bg-white rounded-2xl p-6 border border-gray-100 shadow-sm h-80">
+                        <div className="bg-white rounded-xl p-6 border border-gray-100 shadow-sm h-80">
                             <h2 className="text-lg font-bold text-gray-900 mb-4">Évolution des contributions</h2>
                             <div className="h-full w-full pb-6">
                                 <ResponsiveContainer width="100%" height="100%">
@@ -333,7 +333,7 @@ export default function MemberDetails() {
                     )}
 
                     {/* Tithes History */}
-                    <div className="bg-white rounded-2xl border border-gray-100 shadow-sm overflow-hidden">
+                    <div className="bg-white rounded-xl border border-gray-100 shadow-sm overflow-hidden">
                         <div className="p-6 border-b border-gray-100 flex justify-between items-center">
                             <div>
                                 <h2 className="text-lg font-bold text-gray-900">Historique des Dîmes</h2>
@@ -404,7 +404,7 @@ export default function MemberDetails() {
 
                 {/* Right Column - Remarks */}
                 <div className="space-y-6">
-                    <div className="bg-white rounded-2xl p-6 border border-gray-100 shadow-sm">
+                    <div className="bg-white rounded-xl p-6 border border-gray-100 shadow-sm">
                         <div className="flex items-center justify-between mb-4">
                             <h2 className="text-lg font-bold text-gray-900">Remarques</h2>
                             <button
@@ -427,7 +427,7 @@ export default function MemberDetails() {
                                         <select
                                             value={remarkForm.type}
                                             onChange={(e) => setRemarkForm({ ...remarkForm, type: e.target.value })}
-                                            className="w-full px-3 py-2 border border-gray-200 rounded-lg text-sm focus:ring-2 focus:ring-primary/20 focus:border-primary"
+                                            className="w-full px-3 py-2 border border-gray-200 rounded-xl text-sm focus:ring-2 focus:ring-primary/20 focus:border-primary"
                                         >
                                             {REMARK_TYPES.map(type => (
                                                 <option key={type.value} value={type.value}>{type.label}</option>
@@ -441,7 +441,7 @@ export default function MemberDetails() {
                                             onChange={(e) => setRemarkForm({ ...remarkForm, content: e.target.value })}
                                             rows={3}
                                             required
-                                            className="w-full px-3 py-2 border border-gray-200 rounded-lg text-sm focus:ring-2 focus:ring-primary/20 focus:border-primary"
+                                            className="w-full px-3 py-2 border border-gray-200 rounded-xl text-sm focus:ring-2 focus:ring-primary/20 focus:border-primary"
                                             placeholder="Écrivez votre remarque..."
                                         />
                                     </div>
@@ -449,14 +449,14 @@ export default function MemberDetails() {
                                         <button
                                             type="submit"
                                             disabled={submitting}
-                                            className="flex-1 px-4 py-2 bg-primary text-white rounded-lg hover:bg-primary-dark transition-colors text-sm font-medium disabled:opacity-50"
+                                            className="flex-1 px-4 py-2 bg-primary text-black rounded-xl hover:bg-primary-dark transition-colors text-sm font-medium disabled:opacity-50"
                                         >
                                             {submitting ? 'Ajout...' : 'Ajouter'}
                                         </button>
                                         <button
                                             type="button"
                                             onClick={() => setShowRemarkForm(false)}
-                                            className="px-4 py-2 bg-gray-200 text-gray-700 rounded-lg hover:bg-gray-300 transition-colors text-sm font-medium"
+                                            className="px-4 py-2 bg-gray-200 text-gray-700 rounded-xl hover:bg-gray-300 transition-colors text-sm font-medium"
                                         >
                                             Annuler
                                         </button>

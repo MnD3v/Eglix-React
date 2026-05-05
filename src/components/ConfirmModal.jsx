@@ -21,7 +21,7 @@ export default function ConfirmModal({ isOpen, onClose, onConfirm, title, messag
             ></div>
 
             {/* Modal */}
-            <div className="relative bg-white rounded-2xl shadow-xl transform transition-all sm:max-w-md w-full overflow-hidden border border-gray-100">
+            <div className="relative bg-white rounded-xl shadow-xl transform transition-all sm:max-w-md w-full overflow-hidden border border-gray-100">
                 <div className="p-6">
                     <div className="flex items-start gap-4">
                         {/* Icon based on type */}
