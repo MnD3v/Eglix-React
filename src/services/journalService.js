@@ -86,5 +86,22 @@ export const journalService = {
         if (error) return [];
         const cats = [...new Set(data.map(e => e.category).filter(Boolean))];
         return cats.sort();
+    },
+
+    async uploadAttachment(churchId, file) {
+        const filePath = `journal/${churchId}/${Date.now()}_${file.name.replace(/\s/g, '_')}`;
+        const { error: uploadError } = await supabase.storage
+            .from('church-documents')
+            .upload(filePath, file, { contentType: file.type, upsert: false });
+        if (uploadError) throw uploadError;
+
+        const { data: urlData } = supabase.storage
+            .from('church-documents')
+            .getPublicUrl(filePath);
+
+        return {
+            url: urlData.publicUrl,
+            name: file.name
+        };
     }
 };

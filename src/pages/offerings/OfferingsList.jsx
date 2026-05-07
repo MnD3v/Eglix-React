@@ -87,7 +87,6 @@ export default function OfferingsList() {
         const matchesSearch =
             offering.description?.toLowerCase().includes(searchTerm.toLowerCase()) ||
             offering.payment_method?.toLowerCase().includes(searchTerm.toLowerCase()) ||
-            (offering.members && `${offering.members.first_name} ${offering.members.last_name}`.toLowerCase().includes(searchTerm.toLowerCase())) ||
             (offering.offering_types && offering.offering_types.name.toLowerCase().includes(searchTerm.toLowerCase()));
 
         const matchesPaymentMethod = filters.payment_method ? offering.payment_method === filters.payment_method : true;
@@ -393,9 +392,7 @@ export default function OfferingsList() {
                         <div className="flex justify-between items-start mb-3">
                             <div className="flex-1">
                                 <h3 className="text-lg font-bold text-gray-900">{formatCurrency(offering.amount)}</h3>
-                                <p className="text-sm text-gray-600 mt-1">
-                                    {offering.members ? `${offering.members.first_name} ${offering.members.last_name}` : 'Anonyme'}
-                                </p>
+                                <p className="text-sm text-gray-600 mt-1">Offrande globale</p>
                             </div>
                             <span className={`inline-flex items-center gap-1.5 px-2.5 py-1 rounded-full text-xs font-medium ${offering.payment_method === 'cash' ? 'bg-blue-50 text-blue-700 border border-blue-100' :
                                 offering.payment_method === 'mobile' ? 'bg-purple-50 text-purple-700 border border-purple-100' :
@@ -425,7 +422,6 @@ export default function OfferingsList() {
                         <thead>
                             <tr className="text-left border-b border-gray-100">
                                 <th className="px-6 py-4 text-xs font-bold text-gray-500 uppercase tracking-wider">Date</th>
-                                <th className="px-6 py-4 text-xs font-bold text-gray-500 uppercase tracking-wider">Membre</th>
                                 <th className="px-6 py-4 text-xs font-bold text-gray-500 uppercase tracking-wider">Type</th>
                                 <th className="px-6 py-4 text-xs font-bold text-gray-500 uppercase tracking-wider">Montant</th>
                                 <th className="px-6 py-4 text-xs font-bold text-gray-500 uppercase tracking-wider">Mode de paiement</th>
@@ -447,11 +443,6 @@ export default function OfferingsList() {
                                                 month: 'short',
                                                 year: 'numeric'
                                             })}
-                                        </div>
-                                    </td>
-                                    <td className="px-6 py-4">
-                                        <div className="text-sm text-gray-900">
-                                            {offering.members ? `${offering.members.first_name} ${offering.members.last_name}` : 'Anonyme'}
                                         </div>
                                     </td>
                                     <td className="px-6 py-4">

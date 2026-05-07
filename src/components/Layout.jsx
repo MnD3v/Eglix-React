@@ -1,8 +1,9 @@
-import { useState } from 'react';
+import { useState, useEffect } from 'react';
 import { Outlet, Link, useLocation, useNavigate } from 'react-router-dom';
 import { useAuth } from '../context/AuthContext';
 import { useChurch } from '../context/ChurchContext';
 import ChurchSwitcherModal from './ChurchSwitcherModal';
+import SpotlightModal from './SpotlightModal';
 
 // Icons components for cleaner usage
 const Icons = {
@@ -117,6 +118,11 @@ const Icons = {
             <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M19 9l-7 7-7-7" />
         </svg>
     ),
+    DoubleChevron: () => (
+        <svg className="w-4 h-4 text-gray-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+            <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={1.8} d="M8 9l4-4 4 4m0 6l-4 4-4-4" />
+        </svg>
+    ),
     Annexe: () => (
         <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
             <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M19 21V5a2 2 0 00-2-2H7a2 2 0 00-2 2v16m14 0h2m-2 0h-5m-9 0H3m2 0h5M9 7h1m-1 4h1m4-4h1m-1 4h1m-5 10v-5a1 1 0 011-1h2a1 1 0 011 1v5m-4 0h4" />
@@ -141,20 +147,56 @@ export default function Layout() {
     const { currentChurch } = useChurch();
     const [isSidebarOpen, setIsSidebarOpen] = useState(false);
     const [isChurchModalOpen, setIsChurchModalOpen] = useState(false);
+    const [isAddMenuOpen, setIsAddMenuOpen] = useState(false);
+    const [isSpotlightOpen, setIsSpotlightOpen] = useState(false);
+
+    useEffect(() => {
+        const handleKeyDown = (e) => {
+            if ((e.ctrlKey || e.metaKey) && e.key === 'k') {
+                e.preventDefault();
+                setIsSpotlightOpen(true);
+            }
+        };
+        window.addEventListener('keydown', handleKeyDown);
+        return () => window.removeEventListener('keydown', handleKeyDown);
+    }, []);
+
+    const isFinanceActive = location.pathname.startsWith('/tithes') || 
+                            location.pathname.startsWith('/offerings') || 
+                            location.pathname.startsWith('/donations') ||
+                            location.pathname.startsWith('/expenses');
+    const [isFinancesOpen, setIsFinancesOpen] = useState(isFinanceActive);
+
+    const isCommunityActive = location.pathname.startsWith('/members') || 
+                              location.pathname.startsWith('/groups') || 
+                              location.pathname.startsWith('/guests');
+    const [isCommunityOpen, setIsCommunityOpen] = useState(isCommunityActive);
 
     const userName = user?.email?.split('@')[0] || 'Utilisateur';
     const userEmail = user?.email || '';
 
     const navigation = [
         { name: 'Accueil', href: '/', icon: Icons.Home },
-        { name: 'Membres', href: '/members', icon: Icons.Users },
-        { name: 'Groupes', href: '/groups', icon: Icons.Group },
+        { 
+            name: 'Communauté', 
+            icon: Icons.Users,
+            submenu: [
+                { name: 'Membres', href: '/members', icon: Icons.Users },
+                { name: 'Groupes', href: '/groups', icon: Icons.Group },
+                { name: 'Invités', href: '/guests', icon: Icons.UserAdd },
+            ]
+        },
         { name: 'Annexes', href: '/annexes', icon: Icons.Annexe },
-        { name: 'Invités', href: '/guests', icon: Icons.UserAdd },
-        { name: 'Dîmes', href: '/tithes', icon: Icons.Tithe },
-        { name: 'Offrandes', href: '/offerings', icon: Icons.Gift },
-        { name: 'Dons', href: '/donations', icon: Icons.Donation },
-        { name: 'Dépenses', href: '/expenses', icon: Icons.Expense },
+        { 
+            name: 'Finances', 
+            icon: Icons.Money,
+            submenu: [
+                { name: 'Dîmes', href: '/tithes', icon: Icons.Tithe },
+                { name: 'Offrandes', href: '/offerings', icon: Icons.Gift },
+                { name: 'Dons', href: '/donations', icon: Icons.Donation },
+                { name: 'Dépenses', href: '/expenses', icon: Icons.Expense },
+            ]
+        },
         { name: 'Projets', href: '/projects', icon: Icons.Project },
         { name: 'Journal', href: '/journal', icon: Icons.Journal },
         { name: 'Administration', href: '/administration', icon: Icons.AdminBoard },
@@ -168,23 +210,25 @@ export default function Layout() {
     };
 
     const ChurchSwitcher = () => (
-        <div className="px-4 mb-4">
+        <div className="mb-5">
             <button
                 onClick={() => setIsChurchModalOpen(true)}
-                className="w-full flex items-center gap-3 p-2 rounded-xl bg-white border border-gray-100 hover:border-gray-200 transition-all group"
+                className="w-full flex items-center justify-between gap-3 p-2.5 rounded-[14px] bg-[#f8f9fa] border border-gray-100 hover:bg-gray-100/50 hover:border-gray-200 transition-all group"
             >
-                <div className="w-10 h-10 rounded-xl bg-black text-white flex items-center justify-center flex-shrink-0 shadow-sm">
-                    {currentChurch?.logo_url ? (
-                        <img src={currentChurch.logo_url} alt="" className="w-full h-full object-cover rounded-xl" />
-                    ) : (
-                        <span className="font-bold text-lg">{currentChurch?.name?.[0]?.toUpperCase() || 'E'}</span>
-                    )}
+                <div className="flex items-center gap-3 min-w-0">
+                    <div className="w-10 h-10 rounded-xl bg-black text-white flex items-center justify-center flex-shrink-0 shadow-sm">
+                        {currentChurch?.logo_url ? (
+                            <img src={currentChurch.logo_url} alt="" className="w-full h-full object-cover rounded-xl" />
+                        ) : (
+                            <span className="font-bold text-lg">{currentChurch?.name?.[0]?.toUpperCase() || 'E'}</span>
+                        )}
+                    </div>
+                    <div className="flex-1 min-w-0 text-left">
+                        <p className="text-[14px] font-semibold text-gray-900 truncate">{currentChurch?.name || 'Sélectionner'}</p>
+                    </div>
                 </div>
-                <div className="flex-1 min-w-0 text-left">
-                    <p className="text-sm font-bold text-gray-900 truncate">{currentChurch?.name || 'Sélectionner'}</p>
-                </div>
-                <div className="text-gray-400 group-hover:text-gray-600">
-                    <Icons.ChevronDown />
+                <div className="text-gray-400 group-hover:text-gray-600 flex-shrink-0 pr-1">
+                    <Icons.DoubleChevron />
                 </div>
             </button>
         </div>
@@ -200,20 +244,66 @@ export default function Layout() {
                 </div>
 
                 {/* Navigation */}
-                <nav className="flex-1 px-4 py-4 space-y-0.5 overflow-y-auto">
+                <nav className="flex-1 px-4 py-4 space-y-1.5 overflow-y-auto">
                     <ChurchSwitcher />
 
                     {navigation.map((item) => {
+                        const Icon = item.icon;
+                        if (item.submenu) {
+                            const isSubActive = item.submenu.some(sub => location.pathname.startsWith(sub.href));
+                            const isOpen = item.name === 'Finances' ? isFinancesOpen : isCommunityOpen;
+                            const toggleOpen = () => item.name === 'Finances' ? setIsFinancesOpen(!isFinancesOpen) : setIsCommunityOpen(!isCommunityOpen);
+                            return (
+                                <div key={item.name} className="space-y-1">
+                                    <button
+                                        onClick={toggleOpen}
+                                        className={`w-full flex items-center justify-between px-3.5 py-2.5 rounded-[12px] text-[14px] font-medium transition-all ${isSubActive
+                                            ? 'bg-gray-100 text-gray-900 font-bold'
+                                            : 'text-gray-600 hover:bg-gray-50 hover:text-gray-900'
+                                            }`}
+                                    >
+                                        <div className="flex items-center gap-3">
+                                            <Icon />
+                                            <span>{item.name}</span>
+                                        </div>
+                                        <div className={`transition-transform duration-200 ${isOpen ? 'rotate-180' : ''}`}>
+                                            <Icons.ChevronDown />
+                                        </div>
+                                    </button>
+                                    {isOpen && (
+                                        <div className="pl-6 space-y-1 transition-all">
+                                            {item.submenu.map((sub) => {
+                                                const SubIcon = sub.icon;
+                                                const isSubItemActive = location.pathname.startsWith(sub.href);
+                                                return (
+                                                    <Link
+                                                        key={sub.name}
+                                                        to={sub.href}
+                                                        className={`flex items-center gap-3 px-3.5 py-2 rounded-lg text-xs font-medium transition-all ${isSubItemActive
+                                                            ? 'bg-gray-100 text-gray-900 font-bold'
+                                                            : 'text-gray-500 hover:bg-gray-50 hover:text-gray-900'
+                                                            }`}
+                                                    >
+                                                        <SubIcon />
+                                                        <span>{sub.name}</span>
+                                                    </Link>
+                                                );
+                                            })}
+                                        </div>
+                                    )}
+                                </div>
+                            );
+                        }
+
                         const isActive = location.pathname === item.href ||
                             (item.href !== '/' && location.pathname.startsWith(item.href));
-                        const Icon = item.icon;
                         return (
                             <Link
                                 key={item.name}
                                 to={item.href}
-                                className={`flex items-center gap-3 px-3 py-2 rounded-lg text-sm font-medium transition-all ${isActive
-                                    ? 'bg-gray-100 text-gray-900 font-bold'
-                                    : 'text-gray-500 hover:bg-gray-50 hover:text-gray-900'
+                                className={`flex items-center gap-3 px-3.5 py-2.5 rounded-[12px] text-[14px] font-medium transition-all ${isActive
+                                    ? 'bg-gray-100 text-gray-900 font-semibold'
+                                    : 'text-[#344054] hover:bg-gray-50 hover:text-gray-950'
                                     }`}
                             >
                                 <Icon />
@@ -245,23 +335,70 @@ export default function Layout() {
                 </div>
 
                 {/* Navigation */}
-                <nav className="flex-1 px-3 py-4 space-y-1 overflow-y-auto">
+                <nav className="flex-1 px-4 py-4 space-y-1.5 overflow-y-auto">
                     <ChurchSwitcher />
 
                     <div className="my-4 border-t border-gray-100"></div>
 
                     {navigation.map((item) => {
+                        const Icon = item.icon;
+                        if (item.submenu) {
+                            const isSubActive = item.submenu.some(sub => location.pathname.startsWith(sub.href));
+                            const isOpen = item.name === 'Finances' ? isFinancesOpen : isCommunityOpen;
+                            const toggleOpen = () => item.name === 'Finances' ? setIsFinancesOpen(!isFinancesOpen) : setIsCommunityOpen(!isCommunityOpen);
+                            return (
+                                <div key={item.name} className="space-y-1">
+                                    <button
+                                        onClick={toggleOpen}
+                                        className={`w-full flex items-center justify-between px-3.5 py-2.5 rounded-[12px] text-[14px] font-medium transition-all ${isSubActive
+                                            ? 'bg-gray-50 text-gray-900 font-bold'
+                                            : 'text-gray-600 hover:bg-gray-50 hover:text-gray-900'
+                                            }`}
+                                    >
+                                        <div className="flex items-center gap-3">
+                                            <Icon />
+                                            <span>{item.name}</span>
+                                        </div>
+                                        <div className={`transition-transform duration-200 ${isOpen ? 'rotate-180' : ''}`}>
+                                            <Icons.ChevronDown />
+                                        </div>
+                                    </button>
+                                    {isOpen && (
+                                        <div className="pl-6 space-y-1 transition-all">
+                                            {item.submenu.map((sub) => {
+                                                const SubIcon = sub.icon;
+                                                const isSubItemActive = location.pathname.startsWith(sub.href);
+                                                return (
+                                                    <Link
+                                                        key={sub.name}
+                                                        to={sub.href}
+                                                        onClick={() => setIsSidebarOpen(false)}
+                                                        className={`flex items-center gap-3 px-3.5 py-2 rounded-lg text-xs font-medium transition-all ${isSubItemActive
+                                                            ? 'bg-gray-100 text-gray-900 font-bold'
+                                                            : 'text-gray-500 hover:bg-gray-50 hover:text-gray-900'
+                                                            }`}
+                                                    >
+                                                        <SubIcon />
+                                                        <span>{sub.name}</span>
+                                                    </Link>
+                                                );
+                                            })}
+                                        </div>
+                                    )}
+                                </div>
+                            );
+                        }
+
                         const isActive = location.pathname === item.href ||
                             (item.href !== '/' && location.pathname.startsWith(item.href));
-                        const Icon = item.icon;
                         return (
                             <Link
                                 key={item.name}
                                 to={item.href}
                                 onClick={() => setIsSidebarOpen(false)}
-                                className={`flex items-center gap-3 px-3 py-2.5 rounded-xl text-sm font-medium transition-all ${isActive
-                                    ? 'bg-gray-100 text-gray-900'
-                                    : 'text-gray-600 hover:bg-gray-50 hover:text-gray-900'
+                                className={`flex items-center gap-3 px-3.5 py-2.5 rounded-[12px] text-[14px] font-medium transition-all ${isActive
+                                    ? 'bg-gray-100 text-gray-900 font-semibold'
+                                    : 'text-[#344054] hover:bg-gray-50 hover:text-gray-950'
                                     }`}
                             >
                                 <Icon />
@@ -277,13 +414,23 @@ export default function Layout() {
                 {/* Top Header */}
                 <header className="h-16 bg-white border-b border-gray-200 fixed top-0 right-0 left-0 md:left-64 z-30">
                     <div className="h-full px-4 md:px-8 flex items-center justify-between">
-                        {/* Mobile Menu Button */}
-                        <button
-                            onClick={() => setIsSidebarOpen(true)}
-                            className="md:hidden p-2 hover:bg-gray-100 rounded-xl transition-colors text-gray-600"
-                        >
-                            <Icons.Menu />
-                        </button>
+                        {/* Mobile Menu & Search Buttons */}
+                        <div className="flex items-center gap-2 md:hidden">
+                            <button
+                                onClick={() => setIsSidebarOpen(true)}
+                                className="p-2 hover:bg-gray-100 rounded-xl transition-colors text-gray-600"
+                                title="Menu"
+                            >
+                                <Icons.Menu />
+                            </button>
+                            <button
+                                onClick={() => setIsSpotlightOpen(true)}
+                                className="p-2 hover:bg-gray-100 rounded-xl transition-colors text-gray-600"
+                                title="Rechercher"
+                            >
+                                <Icons.Search />
+                            </button>
+                        </div>
 
                         {/* Search Bar */}
                         <div className="flex-1 max-w-xl mx-auto hidden md:block px-4">
@@ -294,19 +441,96 @@ export default function Layout() {
                                 <input
                                     type="text"
                                     placeholder="Trouvez n'importe quoi : Appuyez sur ⌘K sur votre clavier"
-                                    className="w-full pl-12 pr-4 py-2 bg-gray-100/50 border border-transparent rounded-full text-sm focus:outline-none focus:ring-2 focus:ring-gray-200 focus:bg-white transition-all placeholder-gray-400"
+                                    onClick={() => setIsSpotlightOpen(true)}
+                                    readOnly
+                                    className="w-full pl-12 pr-4 py-2 bg-gray-100/50 border border-transparent rounded-full text-sm cursor-pointer hover:bg-gray-100 transition-all placeholder-gray-400"
                                 />
                             </div>
                         </div>
 
                         {/* Top Right Actions */}
                         <div className="flex items-center gap-3">
-                            <button className="w-10 h-10 flex items-center justify-center bg-gray-100 text-gray-600 rounded-full hover:bg-gray-200 transition-colors">
-                                <Icons.Plus />
-                            </button>
-                            <button className="w-10 h-10 flex items-center justify-center bg-gray-100 text-gray-600 rounded-full hover:bg-gray-200 transition-colors">
-                                <Icons.Grid />
-                            </button>
+                            {/* Add Shortcut Menu */}
+                            <div className="relative">
+                                <button
+                                    onClick={() => setIsAddMenuOpen(!isAddMenuOpen)}
+                                    className="w-10 h-10 flex items-center justify-center bg-gray-100 text-gray-600 rounded-full hover:bg-gray-200 transition-colors"
+                                >
+                                    <Icons.Plus />
+                                </button>
+
+                                {isAddMenuOpen && (
+                                    <>
+                                        {/* Overlay to close menu */}
+                                        <div className="fixed inset-0 z-40" onClick={() => setIsAddMenuOpen(false)} />
+                                        
+                                        <div className="absolute right-0 top-full mt-2 w-56 bg-white rounded-xl shadow-xl border border-gray-100 z-50 overflow-hidden">
+                                            <div className="px-4 py-2 border-b border-gray-50 bg-gray-50/50">
+                                                <p className="text-[10px] font-bold text-gray-400 uppercase tracking-wider">Ajouter un élément</p>
+                                            </div>
+                                            <div className="p-2 space-y-0.5">
+                                                <Link
+                                                    to="/members/new"
+                                                    onClick={() => setIsAddMenuOpen(false)}
+                                                    className="flex items-center gap-3 px-3 py-2 text-sm text-gray-700 hover:bg-gray-50 rounded-lg transition-colors"
+                                                >
+                                                    <span className="text-blue-500"><Icons.Users /></span>
+                                                    <span>Membre</span>
+                                                </Link>
+                                                <Link
+                                                    to="/tithes/new"
+                                                    onClick={() => setIsAddMenuOpen(false)}
+                                                    className="flex items-center gap-3 px-3 py-2 text-sm text-gray-700 hover:bg-gray-50 rounded-lg transition-colors"
+                                                >
+                                                    <span className="text-emerald-500"><Icons.Tithe /></span>
+                                                    <span>Dîme</span>
+                                                </Link>
+                                                <Link
+                                                    to="/offerings/new"
+                                                    onClick={() => setIsAddMenuOpen(false)}
+                                                    className="flex items-center gap-3 px-3 py-2 text-sm text-gray-700 hover:bg-gray-50 rounded-lg transition-colors"
+                                                >
+                                                    <span className="text-purple-500"><Icons.Gift /></span>
+                                                    <span>Offrande</span>
+                                                </Link>
+                                                <Link
+                                                    to="/donations/new"
+                                                    onClick={() => setIsAddMenuOpen(false)}
+                                                    className="flex items-center gap-3 px-3 py-2 text-sm text-gray-700 hover:bg-gray-50 rounded-lg transition-colors"
+                                                >
+                                                    <span className="text-pink-500"><Icons.Donation /></span>
+                                                    <span>Don</span>
+                                                </Link>
+                                                <Link
+                                                    to="/expenses/new"
+                                                    onClick={() => setIsAddMenuOpen(false)}
+                                                    className="flex items-center gap-3 px-3 py-2 text-sm text-gray-700 hover:bg-gray-50 rounded-lg transition-colors"
+                                                >
+                                                    <span className="text-rose-500"><Icons.Expense /></span>
+                                                    <span>Dépense</span>
+                                                </Link>
+                                                <Link
+                                                    to="/projects/new"
+                                                    onClick={() => setIsAddMenuOpen(false)}
+                                                    className="flex items-center gap-3 px-3 py-2 text-sm text-gray-700 hover:bg-gray-50 rounded-lg transition-colors"
+                                                >
+                                                    <span className="text-amber-500"><Icons.Project /></span>
+                                                    <span>Projet</span>
+                                                </Link>
+                                                <Link
+                                                    to="/journal/new"
+                                                    onClick={() => setIsAddMenuOpen(false)}
+                                                    className="flex items-center gap-3 px-3 py-2 text-sm text-gray-700 hover:bg-gray-50 rounded-lg transition-colors"
+                                                >
+                                                    <span className="text-indigo-500"><Icons.Journal /></span>
+                                                    <span>Entrée Journal</span>
+                                                </Link>
+                                            </div>
+                                        </div>
+                                    </>
+                                )}
+                            </div>
+
 
                             {/* User Menu */}
                             <div className="relative group ml-1">
@@ -352,6 +576,13 @@ export default function Layout() {
             <ChurchSwitcherModal
                 isOpen={isChurchModalOpen}
                 onClose={() => setIsChurchModalOpen(false)}
+            />
+
+            {/* Spotlight Search Modal */}
+            <SpotlightModal
+                isOpen={isSpotlightOpen}
+                onClose={() => setIsSpotlightOpen(false)}
+                churchId={currentChurch?.id}
             />
         </div>
     );

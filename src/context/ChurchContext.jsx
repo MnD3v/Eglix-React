@@ -73,8 +73,8 @@ export function ChurchProvider({ children }) {
 
     if (loading) return <div className="h-screen flex items-center justify-center"><Loader /></div>;
 
-    // Don't redirect to create-church if on public routes
-    const publicRoutes = ['/join/', '/login', '/register'];
+    // Don't redirect to create-church if on public routes or already on the create-church page
+    const publicRoutes = ['/join/', '/login', '/register', '/create-church'];
     const isPublicRoute = publicRoutes.some(route => location.pathname.startsWith(route));
 
     // If user has no church and not on a public route, redirect to create church page

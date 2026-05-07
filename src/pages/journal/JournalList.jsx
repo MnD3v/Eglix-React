@@ -2,6 +2,7 @@ import { useState, useEffect } from 'react';
 import { Link, useNavigate } from 'react-router-dom';
 import { useChurch } from '../../context/ChurchContext';
 import { journalService } from '../../services/journalService';
+import ConfirmModal from '../../components/ConfirmModal';
 
 export default function JournalList() {
     const { currentChurch } = useChurch();
@@ -10,6 +11,7 @@ export default function JournalList() {
     const [loading, setLoading] = useState(true);
     const [filters, setFilters] = useState({ startDate: '', endDate: '', search: '', category: '' });
     const [categories, setCategories] = useState([]);
+    const [entryToDelete, setEntryToDelete] = useState(null);
 
     const fetchEntries = async () => {
         if (!currentChurch) return;
@@ -31,7 +33,6 @@ export default function JournalList() {
     useEffect(() => { fetchEntries(); }, [currentChurch, filters]);
 
     const handleDelete = async (id) => {
-        if (!window.confirm('Supprimer cette entrée ?')) return;
         try {
             await journalService.delete(id);
             fetchEntries();
@@ -146,7 +147,16 @@ export default function JournalList() {
                                 </div>
                                 {/* Info */}
                                 <div className="flex-1 min-w-0 cursor-pointer" onClick={() => navigate(`/journal/${entry.id}`)}>
-                                    <p className="font-semibold text-gray-900 truncate hover:text-primary transition-colors">{entry.title}</p>
+                                    <div className="flex items-center gap-2">
+                                        <p className="font-semibold text-gray-900 truncate hover:text-primary transition-colors">{entry.title}</p>
+                                        {entry.attachments && entry.attachments.length > 0 && (
+                                            <span className="flex-shrink-0 text-gray-400" title={`${entry.attachments.length} pièce(s) jointe(s)`}>
+                                                <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M15.172 7l-6.586 6.586a2 2 0 102.828 2.828l6.414-6.586a4 4 0 00-5.656-5.656l-6.415 6.585a6 6 0 108.486 8.486L20.5 13" />
+                                                </svg>
+                                            </span>
+                                        )}
+                                    </div>
                                     <p className="text-sm text-gray-500 truncate mt-0.5">
                                         {entry.category && <span className="font-medium text-gray-600">{entry.category} · </span>}
                                         {entry.description || 'Aucune description'}
@@ -164,7 +174,7 @@ export default function JournalList() {
                                         </svg>
                                     </button>
                                     <button
-                                        onClick={() => handleDelete(entry.id)}
+                                        onClick={() => setEntryToDelete(entry.id)}
                                         className="p-2 text-gray-400 hover:text-red-500 hover:bg-red-50 rounded-xl transition-all"
                                         title="Supprimer"
                                     >
@@ -178,6 +188,20 @@ export default function JournalList() {
                     </div>
                 )}
             </div>
+
+            <ConfirmModal
+                isOpen={entryToDelete !== null}
+                title="Supprimer l'entrée du journal"
+                message="Êtes-vous sûr de vouloir supprimer cette entrée de journal ? Cette action est définitive."
+                confirmText="Supprimer"
+                cancelText="Annuler"
+                onConfirm={() => {
+                    handleDelete(entryToDelete);
+                    setEntryToDelete(null);
+                }}
+                onCancel={() => setEntryToDelete(null)}
+                type="danger"
+            />
         </div>
     );
 }

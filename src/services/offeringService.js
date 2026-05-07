@@ -6,7 +6,7 @@ export const offeringService = {
 
         let query = supabase
             .from('offerings')
-            .select('*, members(first_name, last_name), offering_types(name)', { count: 'exact' })
+            .select('*, offering_types(name)', { count: 'exact' })
             .eq('church_id', churchId)
             .order('date', { ascending: false })
 
@@ -37,7 +37,7 @@ export const offeringService = {
     async getById(id) {
         const { data, error } = await supabase
             .from('offerings')
-            .select('*, members(first_name, last_name, email, phone), offering_types(name)')
+            .select('*, offering_types(name)')
             .eq('id', id)
             .single()
 

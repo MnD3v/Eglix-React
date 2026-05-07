@@ -4,7 +4,10 @@ import { useAuth } from '../context/AuthContext';
 import { useChurch } from '../context/ChurchContext';
 import { memberService } from '../services/memberService';
 import { titheService } from '../services/titheService';
+import { offeringService } from '../services/offeringService';
+import { expenseService } from '../services/expenseService';
 import Loader from '../components/Loader';
+import { AreaChart, Area, XAxis, YAxis, CartesianGrid, Tooltip, ResponsiveContainer } from 'recharts';
 
 // Icons components
 const Icons = {
@@ -40,6 +43,9 @@ export default function Dashboard() {
     const { currentChurch } = useChurch();
     const [stats, setStats] = useState({ total: 0, active: 0, male: 0, female: 0 });
     const [titheStats, setTitheStats] = useState({ thisMonth: 0, totalAmount: 0 });
+    const [offeringStats, setOfferingStats] = useState({ thisMonth: 0, totalAmount: 0 });
+    const [monthlyExpenses, setMonthlyExpenses] = useState(0);
+    const [chartData, setChartData] = useState([]);
     const [loading, setLoading] = useState(true);
 
     const loadStats = useCallback(async () => {
@@ -47,12 +53,64 @@ export default function Dashboard() {
 
         try {
             setLoading(true);
-            const [memberData, titheData] = await Promise.all([
+            const now = new Date();
+            const firstDayThisMonth = `${now.getFullYear()}-${String(now.getMonth() + 1).padStart(2, '0')}-01`;
+
+            const [memberData, titheData, offeringData, expensesData, allTithes, allOfferings, allExpenses] = await Promise.all([
                 memberService.getStats(currentChurch.id),
-                titheService.getStats(currentChurch.id)
+                titheService.getStats(currentChurch.id),
+                offeringService.getStats(currentChurch.id),
+                expenseService.getTotalAmount(currentChurch.id, { startDate: firstDayThisMonth }),
+                titheService.getAll(currentChurch.id),
+                offeringService.getAll(currentChurch.id),
+                expenseService.getAll(currentChurch.id)
             ]);
             setStats(memberData);
             setTitheStats(titheData);
+            setOfferingStats(offeringData);
+            setMonthlyExpenses(expensesData);
+
+            // Aggregate last 6 months
+            const last6Months = [];
+            for (let i = 5; i >= 0; i--) {
+                const d = new Date(now.getFullYear(), now.getMonth() - i, 1);
+                const monthName = d.toLocaleDateString('fr-FR', { month: 'short' });
+                last6Months.push({
+                    name: monthName,
+                    monthKey: `${d.getFullYear()}-${String(d.getMonth() + 1).padStart(2, '0')}`,
+                    recettes: 0,
+                    depenses: 0
+                });
+            }
+
+            if (allTithes.data) {
+                allTithes.data.forEach(t => {
+                    const date = new Date(t.date);
+                    const key = `${date.getFullYear()}-${String(date.getMonth() + 1).padStart(2, '0')}`;
+                    const month = last6Months.find(m => m.monthKey === key);
+                    if (month) month.recettes += parseFloat(t.amount || 0);
+                });
+            }
+
+            if (allOfferings.data) {
+                allOfferings.data.forEach(o => {
+                    const date = new Date(o.date);
+                    const key = `${date.getFullYear()}-${String(date.getMonth() + 1).padStart(2, '0')}`;
+                    const month = last6Months.find(m => m.monthKey === key);
+                    if (month) month.recettes += parseFloat(o.amount || 0);
+                });
+            }
+
+            if (allExpenses.data) {
+                allExpenses.data.forEach(e => {
+                    const date = new Date(e.paid_at || e.created_at);
+                    const key = `${date.getFullYear()}-${String(date.getMonth() + 1).padStart(2, '0')}`;
+                    const month = last6Months.find(m => m.monthKey === key);
+                    if (month) month.depenses += parseFloat(e.amount || 0);
+                });
+            }
+
+            setChartData(last6Months);
         } catch (error) {
             console.error('Error loading stats:', error);
         } finally {
@@ -124,19 +182,19 @@ export default function Dashboard() {
                     </div>
                 </Link>
 
-                <button className="bg-white p-6 rounded-xl border border-gray-200 hover:border-primary/30 hover:shadow-md transition-all text-left group">
+                <Link to="/offerings/new" className="bg-white p-6 rounded-xl border border-gray-200 hover:border-primary/30 hover:shadow-md transition-all text-left group">
                     <div className="flex items-center gap-4">
-                        <div className="w-12 h-12 bg-green-50 rounded-xl flex items-center justify-center group-hover:bg-green-100 transition-colors">
-                            <span className="text-green-600">
-                                <Icons.Calendar />
+                        <div className="w-12 h-12 bg-purple-50 rounded-xl flex items-center justify-center group-hover:bg-purple-100 transition-colors">
+                            <span className="text-purple-600">
+                                <Icons.Money />
                             </span>
                         </div>
                         <div>
-                            <h3 className="font-semibold text-gray-900">Créer un événement</h3>
-                            <p className="text-sm text-gray-500">Planifier une activité</p>
+                            <h3 className="font-semibold text-gray-900">Ajouter une offrande</h3>
+                            <p className="text-sm text-gray-500">Enregistrer une offrande globale</p>
                         </div>
                     </div>
-                </button>
+                </Link>
             </div>
 
             {/* Stats Cards */}
@@ -155,26 +213,6 @@ export default function Dashboard() {
 
                 <div className="bg-white rounded-xl p-6 border border-gray-100 shadow-[0_2px_10px_rgba(0,0,0,0.02)]">
                     <div className="flex items-center justify-between mb-8">
-                        <h3 className="text-sm font-bold text-gray-900">Invités récents</h3>
-                        <span className="text-gray-300">
-                            <Icons.Info />
-                        </span>
-                    </div>
-                    <p className="text-3xl font-bold text-gray-900">0</p>
-                </div>
-
-                <div className="bg-white rounded-xl p-6 border border-gray-100 shadow-[0_2px_10px_rgba(0,0,0,0.02)]">
-                    <div className="flex items-center justify-between mb-8">
-                        <h3 className="text-sm font-bold text-gray-900">Événements</h3>
-                        <span className="text-gray-300">
-                            <Icons.Info />
-                        </span>
-                    </div>
-                    <p className="text-3xl font-bold text-gray-900">0</p>
-                </div>
-
-                <div className="bg-white rounded-xl p-6 border border-gray-100 shadow-[0_2px_10px_rgba(0,0,0,0.02)]">
-                    <div className="flex items-center justify-between mb-8">
                         <h3 className="text-sm font-bold text-gray-900">Dîmes du mois</h3>
                         <span className="text-gray-300">
                             <Icons.Info />
@@ -184,7 +222,103 @@ export default function Dashboard() {
                         {loading ? <Loader /> : formatCurrency(titheStats.thisMonth)}
                     </div>
                 </div>
+
+                <div className="bg-white rounded-xl p-6 border border-gray-100 shadow-[0_2px_10px_rgba(0,0,0,0.02)]">
+                    <div className="flex items-center justify-between mb-8">
+                        <h3 className="text-sm font-bold text-gray-900">Offrandes du mois</h3>
+                        <span className="text-gray-300">
+                            <Icons.Info />
+                        </span>
+                    </div>
+                    <div className="text-3xl font-bold text-gray-900 min-h-[40px] flex items-center">
+                        {loading ? <Loader /> : formatCurrency(offeringStats.thisMonth)}
+                    </div>
+                </div>
+
+                <div className="bg-white rounded-xl p-6 border border-gray-100 shadow-[0_2px_10px_rgba(0,0,0,0.02)]">
+                    <div className="flex items-center justify-between mb-8">
+                        <h3 className="text-sm font-bold text-gray-900">Dépenses du mois</h3>
+                        <span className="text-gray-300">
+                            <Icons.Info />
+                        </span>
+                    </div>
+                    <div className="text-3xl font-bold text-gray-900 min-h-[40px] flex items-center">
+                        {loading ? <Loader /> : formatCurrency(monthlyExpenses)}
+                    </div>
+                </div>
             </div>
+
+            {/* Financial Chart Comparison */}
+            {!loading && chartData.length > 0 && (
+                <div className="bg-white p-6 rounded-xl shadow-sm border border-gray-100 h-96">
+                    <div className="flex justify-between items-center mb-6">
+                        <div>
+                            <h3 className="text-lg font-bold text-gray-900">Aperçu Financier</h3>
+                            <p className="text-xs text-gray-500">Comparaison des recettes (dîmes + offrandes) et des dépenses sur les 6 derniers mois</p>
+                        </div>
+                        <div className="flex gap-4 text-xs">
+                            <div className="flex items-center gap-1.5 font-medium text-gray-600">
+                                <span className="w-3 h-3 bg-emerald-500 rounded-full inline-block" />
+                                Recettes
+                            </div>
+                            <div className="flex items-center gap-1.5 font-medium text-gray-600">
+                                <span className="w-3 h-3 bg-rose-500 rounded-full inline-block" />
+                                Dépenses
+                            </div>
+                        </div>
+                    </div>
+                    <div className="h-[80%] w-full pb-6">
+                        <ResponsiveContainer width="100%" height="100%">
+                            <AreaChart data={chartData}>
+                                <defs>
+                                    <linearGradient id="colorRecettes" x1="0" y1="0" x2="0" y2="1">
+                                        <stop offset="5%" stopColor="#10b981" stopOpacity={0.15} />
+                                        <stop offset="95%" stopColor="#10b981" stopOpacity={0} />
+                                    </linearGradient>
+                                    <linearGradient id="colorDepenses" x1="0" y1="0" x2="0" y2="1">
+                                        <stop offset="5%" stopColor="#f43f5e" stopOpacity={0.15} />
+                                        <stop offset="95%" stopColor="#f43f5e" stopOpacity={0} />
+                                    </linearGradient>
+                                </defs>
+                                <CartesianGrid strokeDasharray="3 3" vertical={false} stroke="#f1f5f9" />
+                                <XAxis
+                                    dataKey="name"
+                                    axisLine={false}
+                                    tickLine={false}
+                                    tick={{ fill: '#94a3b8', fontSize: 12 }}
+                                    dy={10}
+                                />
+                                <YAxis
+                                    axisLine={false}
+                                    tickLine={false}
+                                    tick={{ fill: '#94a3b8', fontSize: 12 }}
+                                    tickFormatter={(value) => `${value / 1000}k`}
+                                />
+                                <Tooltip
+                                    contentStyle={{ borderRadius: '12px', border: 'none', boxShadow: '0 4px 20px rgba(0,0,0,0.05)' }}
+                                    formatter={(value, name) => [formatCurrency(value), name === 'recettes' ? 'Recettes' : 'Dépenses']}
+                                />
+                                <Area
+                                    type="monotone"
+                                    dataKey="recettes"
+                                    stroke="#10b981"
+                                    strokeWidth={3}
+                                    fillOpacity={1}
+                                    fill="url(#colorRecettes)"
+                                />
+                                <Area
+                                    type="monotone"
+                                    dataKey="depenses"
+                                    stroke="#f43f5e"
+                                    strokeWidth={3}
+                                    fillOpacity={1}
+                                    fill="url(#colorDepenses)"
+                                />
+                            </AreaChart>
+                        </ResponsiveContainer>
+                    </div>
+                </div>
+            )}
         </div>
     );
 }

@@ -1,5 +1,9 @@
+-- ============================================================
+-- PROJECTS — Projets d'une église
+-- ============================================================
+
 CREATE TABLE IF NOT EXISTS public.projects (
-    id UUID DEFAULT extensions.uuid_generate_v4() PRIMARY KEY,
+    id UUID DEFAULT gen_random_uuid() PRIMARY KEY,
     church_id BIGINT REFERENCES public.churches(id) ON DELETE CASCADE NOT NULL,
     name VARCHAR(255) NOT NULL,
     description TEXT,

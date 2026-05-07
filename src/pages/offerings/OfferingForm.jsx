@@ -2,7 +2,6 @@ import { useState, useEffect, useCallback } from 'react';
 import { useNavigate, useParams } from 'react-router-dom';
 import { offeringService } from '../../services/offeringService';
 import { useChurch } from '../../context/ChurchContext';
-import MemberSelectorModal from '../../components/MemberSelectorModal';
 
 // Reusable Input Component
 const InputGroup = ({ label, name, type = "text", required = false, placeholder = "", value, onChange, className = "", min }) => (
@@ -52,14 +51,9 @@ export default function OfferingForm() {
     const isEditMode = !!id;
 
     const [loading, setLoading] = useState(false);
-    const [members, setMembers] = useState([]);
     const [offeringTypes, setOfferingTypes] = useState([]);
-    const [isAnonymous, setIsAnonymous] = useState(false);
-    const [isMemberModalOpen, setIsMemberModalOpen] = useState(false);
-    const [selectedMember, setSelectedMember] = useState(null);
 
     const [formData, setFormData] = useState({
-        member_id: '',
         offering_type_id: '',
         amount: '',
         date: new Date().toISOString().split('T')[0],
@@ -72,33 +66,17 @@ export default function OfferingForm() {
 
         try {
             setLoading(true);
-            // Load members and types for dropdowns
-            const [membersData, typesData] = await Promise.all([
-                offeringService.getMembers(currentChurch.id),
-                offeringService.getTypes(currentChurch.id)
-            ]);
-            setMembers(membersData);
+            const typesData = await offeringService.getTypes(currentChurch.id);
             setOfferingTypes(typesData);
 
-            // If edit mode, load offering data
             if (id) {
                 const offeringData = await offeringService.getById(id);
                 if (offeringData) {
                     setFormData({
                         ...offeringData,
-                        member_id: offeringData.member_id || '',
                         offering_type_id: offeringData.offering_type_id || '',
                         date: offeringData.date ? offeringData.date.split('T')[0] : ''
                     });
-
-                    if (offeringData.member_id) {
-                        // Find member in loaded data or use the one from offeringData if available
-                        const member = membersData.find(m => m.id === offeringData.member_id) || offeringData.members;
-                        setSelectedMember(member);
-                        setIsAnonymous(false);
-                    } else {
-                        setIsAnonymous(true);
-                    }
                 }
             }
         } catch (error) {
@@ -118,20 +96,6 @@ export default function OfferingForm() {
         setFormData(prev => ({ ...prev, [name]: value }));
     };
 
-    const handleMemberSelect = (member) => {
-        setSelectedMember(member);
-        setFormData(prev => ({ ...prev, member_id: member.id }));
-    };
-
-    const toggleAnonymous = () => {
-        setIsAnonymous(!isAnonymous);
-        if (!isAnonymous) {
-            // Switching to anonymous
-            setSelectedMember(null);
-            setFormData(prev => ({ ...prev, member_id: '' }));
-        }
-    };
-
     const handleSubmit = async (e) => {
         e.preventDefault();
         if (!currentChurch) {
@@ -139,17 +103,11 @@ export default function OfferingForm() {
             return;
         }
 
-        if (!isAnonymous && !formData.member_id) {
-            alert("Veuillez sélectionner un membre ou activer le mode anonyme.");
-            return;
-        }
-
         setLoading(true);
         try {
             const dataToSubmit = {
                 ...formData,
-                church_id: currentChurch.id,
-                member_id: isAnonymous ? null : formData.member_id
+                church_id: currentChurch.id
             };
 
             if (isEditMode) {
@@ -239,49 +197,8 @@ export default function OfferingForm() {
                         />
                     </div>
 
-                    {/* Membre et Mode de paiement */}
+                    {/* Mode de paiement */}
                     <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
-                        {/* Member Selection Section */}
-                        <div className="space-y-1.5">
-                            <div className="flex justify-between items-center mb-1">
-                                <label className="block text-sm font-medium text-gray-700">
-                                    Membre {!isAnonymous && <span className="text-red-500">*</span>}
-                                </label>
-                                <button
-                                    type="button"
-                                    onClick={toggleAnonymous}
-                                    className={`text-xs font-medium px-2 py-1 rounded-full transition-colors ${isAnonymous
-                                        ? 'bg-primary text-black'
-                                        : 'bg-gray-100 text-gray-500 hover:bg-gray-200'
-                                        }`}
-                                >
-                                    {isAnonymous ? 'Anonyme activé' : 'Rendre anonyme'}
-                                </button>
-                            </div>
-
-                            {isAnonymous ? (
-                                <div className="block w-full px-4 py-3 rounded-xl border border-gray-200 bg-gray-50 text-gray-500 sm:text-sm italic">
-                                    Offrande anonyme
-                                </div>
-                            ) : (
-                                <div
-                                    onClick={() => setIsMemberModalOpen(true)}
-                                    className="relative cursor-pointer group"
-                                >
-                                    <div className={`block w-full px-4 py-3 rounded-xl border ${selectedMember ? 'border-gray-300 bg-white' : 'border-gray-200 bg-gray-50'} text-gray-900 transition-all duration-200 sm:text-sm flex items-center justify-between group-hover:border-primary/50 group-hover:ring-2 group-hover:ring-primary/10`}>
-                                        <span className={selectedMember ? 'font-medium' : 'text-gray-400'}>
-                                            {selectedMember
-                                                ? `${selectedMember.first_name} ${selectedMember.last_name}`
-                                                : 'Sélectionner un membre...'}
-                                        </span>
-                                        <svg className="h-5 w-5 text-gray-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                                            <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M19 9l-7 7-7-7" />
-                                        </svg>
-                                    </div>
-                                </div>
-                            )}
-                        </div>
-
                         <SelectGroup
                             label="Mode de paiement"
                             name="payment_method"
@@ -325,12 +242,6 @@ export default function OfferingForm() {
                 </form>
             </div>
 
-            <MemberSelectorModal
-                isOpen={isMemberModalOpen}
-                onClose={() => setIsMemberModalOpen(false)}
-                onSelect={handleMemberSelect}
-                members={members}
-            />
         </div>
     );
 }
