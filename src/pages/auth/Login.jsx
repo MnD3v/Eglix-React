@@ -1,6 +1,7 @@
 import { useState } from 'react';
 import { Link, useNavigate } from 'react-router-dom';
 import { useAuth } from '../../context/AuthContext';
+import Spinner from '../../components/Spinner';
 
 export default function Login() {
     const navigate = useNavigate();
@@ -91,7 +92,9 @@ export default function Login() {
                         disabled={loading}
                         className="premium-button-primary mt-4"
                     >
-                        {loading ? 'Connexion...' : 'Se connecter'}
+                        {loading ? (
+                            <Spinner size="md" className="mx-auto text-black" />
+                        ) : 'Se connecter'}
                     </button>
                 </form>
 

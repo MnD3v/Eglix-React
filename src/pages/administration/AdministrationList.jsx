@@ -1,10 +1,12 @@
 import { useState, useEffect } from 'react';
 import { Link, useNavigate } from 'react-router-dom';
 import { useChurch } from '../../context/ChurchContext';
+import { useNotification } from '../../context/NotificationContext';
 import { administrationService } from '../../services/administrationService';
 
 export default function AdministrationList() {
     const { currentChurch } = useChurch();
+    const { confirm } = useNotification();
     const navigate = useNavigate();
     const [members, setMembers] = useState([]);
     const [loading, setLoading] = useState(true);
@@ -26,7 +28,14 @@ export default function AdministrationList() {
     useEffect(() => { fetchMembers(); }, [currentChurch, search]);
 
     const handleDelete = async (id) => {
-        if (!window.confirm('Retirer ce membre du bureau ?')) return;
+        const ok = await confirm({
+            title: 'Retirer du bureau',
+            message: 'Êtes-vous sûr de vouloir retirer ce membre du bureau administratif ?',
+            confirmText: 'Retirer',
+            cancelText: 'Annuler',
+            type: 'danger'
+        });
+        if (!ok) return;
         try {
             await administrationService.delete(id);
             fetchMembers();

@@ -19,6 +19,8 @@ import Login from "./pages/auth/Login";
 import Register from "./pages/auth/Register";
 import PublicMemberForm from "./pages/public/PublicMemberForm";
 import Settings from "./pages/settings/Settings";
+import CollaboratorsList from "./pages/settings/CollaboratorsList";
+import CollaboratorForm from "./pages/settings/CollaboratorForm";
 import CreateChurch from "./pages/church/CreateChurch";
 
 // New modules
@@ -44,6 +46,7 @@ import AnnexeDetails from "./pages/annexes/AnnexeDetails";
 
 import { ChurchProvider } from "./context/ChurchContext";
 import { AuthProvider, useAuth } from "./context/AuthContext";
+import { NotificationProvider } from "./context/NotificationContext";
 
 import Loader from "./components/Loader";
 
@@ -63,8 +66,9 @@ function ProtectedRoute({ children }) {
 function App() {
   return (
     <AuthProvider>
-      <BrowserRouter>
-        <ChurchProvider>
+      <NotificationProvider>
+        <BrowserRouter>
+          <ChurchProvider>
           <Routes>
             <Route path="/login" element={<Login />} />
             <Route path="/register" element={<Register />} />
@@ -158,10 +162,14 @@ function App() {
 
               {/* Other Routes */}
               <Route path="settings" element={<Settings />} />
+              <Route path="settings/collaborators" element={<CollaboratorsList />} />
+              <Route path="settings/collaborators/new" element={<CollaboratorForm />} />
+              <Route path="settings/collaborators/:id/edit" element={<CollaboratorForm />} />
             </Route>
           </Routes>
         </ChurchProvider>
       </BrowserRouter>
+      </NotificationProvider>
     </AuthProvider>
   );
 }

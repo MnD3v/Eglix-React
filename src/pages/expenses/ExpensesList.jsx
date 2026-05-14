@@ -1,10 +1,12 @@
 import { useState, useEffect } from 'react';
 import { Link, useNavigate } from 'react-router-dom';
 import { useChurch } from '../../context/ChurchContext';
+import { useNotification } from '../../context/NotificationContext';
 import { expenseService } from '../../services/expenseService';
 
 export default function ExpensesList() {
     const { currentChurch } = useChurch();
+    const { confirm } = useNotification();
     const navigate = useNavigate();
     const [expenses, setExpenses] = useState([]);
     const [loading, setLoading] = useState(true);
@@ -35,7 +37,14 @@ export default function ExpensesList() {
     useEffect(() => { fetchExpenses(); }, [currentChurch, filters]);
 
     const handleDelete = async (id) => {
-        if (!window.confirm('Supprimer cette dépense ?')) return;
+        const ok = await confirm({
+            title: 'Supprimer la dépense',
+            message: 'Êtes-vous sûr de vouloir supprimer définitivement cette dépense ? Cette action est irréversible.',
+            confirmText: 'Supprimer',
+            cancelText: 'Annuler',
+            type: 'danger'
+        });
+        if (!ok) return;
         try {
             await expenseService.delete(id);
             fetchExpenses();

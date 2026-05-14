@@ -1,6 +1,7 @@
 import { useState } from 'react';
 import { Link, useNavigate } from 'react-router-dom';
 import { useAuth } from '../../context/AuthContext';
+import Spinner from '../../components/Spinner';
 
 export default function Register() {
     const navigate = useNavigate();
@@ -26,8 +27,7 @@ export default function Register() {
                 },
             });
             if (error) throw error;
-            alert('Inscription réussie ! Veuillez vérifier votre email pour confirmer.');
-            navigate('/login');
+            navigate('/');
         } catch (err) {
             setError(err.message);
         } finally {
@@ -122,7 +122,9 @@ export default function Register() {
                         disabled={loading}
                         className="premium-button-primary mt-4"
                     >
-                        {loading ? 'Inscription...' : "S'inscrire"}
+                        {loading ? (
+                            <Spinner size="md" className="mx-auto text-black" />
+                        ) : "S'inscrire"}
                     </button>
                 </form>
 

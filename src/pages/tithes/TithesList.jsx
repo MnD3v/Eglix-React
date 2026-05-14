@@ -82,7 +82,8 @@ export default function TithesList() {
         const matchesSearch =
             tithe.description?.toLowerCase().includes(searchTerm.toLowerCase()) ||
             tithe.payment_method?.toLowerCase().includes(searchTerm.toLowerCase()) ||
-            (tithe.members && `${tithe.members.first_name} ${tithe.members.last_name}`.toLowerCase().includes(searchTerm.toLowerCase()));
+            (tithe.members && `${tithe.members.first_name} ${tithe.members.last_name}`.toLowerCase().includes(searchTerm.toLowerCase())) ||
+            (tithe.donor_name && tithe.donor_name.toLowerCase().includes(searchTerm.toLowerCase()));
 
         const matchesPaymentMethod = filters.payment_method ? tithe.payment_method === filters.payment_method : true;
 
@@ -364,7 +365,7 @@ export default function TithesList() {
                             <div className="flex-1">
                                 <h3 className="text-lg font-bold text-gray-900">{formatCurrency(tithe.amount)}</h3>
                                 <p className="text-sm text-gray-600 mt-1">
-                                    {tithe.members ? `${tithe.members.first_name} ${tithe.members.last_name}` : 'Anonyme'}
+                                    {tithe.members ? `${tithe.members.first_name} ${tithe.members.last_name}` : (tithe.donor_name || 'Anonyme')}
                                 </p>
                             </div>
                             <span className={`inline-flex items-center gap-1.5 px-2.5 py-1 rounded-full text-xs font-medium ${tithe.payment_method === 'cash' ? 'bg-blue-50 text-blue-700 border border-blue-100' :
@@ -415,7 +416,7 @@ export default function TithesList() {
                                     </td>
                                     <td className="px-6 py-4">
                                         <div className="text-sm text-gray-900">
-                                            {tithe.members ? `${tithe.members.first_name} ${tithe.members.last_name}` : 'Anonyme'}
+                                            {tithe.members ? `${tithe.members.first_name} ${tithe.members.last_name}` : (tithe.donor_name || 'Anonyme')}
                                         </div>
                                     </td>
                                     <td className="px-6 py-4">

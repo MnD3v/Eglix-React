@@ -1,10 +1,12 @@
 import { useState, useEffect } from 'react';
 import { Link, useNavigate } from 'react-router-dom';
 import { useChurch } from '../../context/ChurchContext';
+import { useNotification } from '../../context/NotificationContext';
 import { donationService } from '../../services/donationService';
 
 export default function DonationsList() {
     const { currentChurch } = useChurch();
+    const { confirm } = useNotification();
     const navigate = useNavigate();
     const [donations, setDonations] = useState([]);
     const [loading, setLoading] = useState(true);
@@ -29,7 +31,14 @@ export default function DonationsList() {
     useEffect(() => { fetchDonations(); }, [currentChurch, filters]);
 
     const handleDelete = async (id) => {
-        if (!window.confirm('Supprimer ce don ?')) return;
+        const ok = await confirm({
+            title: 'Supprimer le don',
+            message: 'Voulez-vous vraiment supprimer ce don ? Cette action modifiera vos totaux financiers.',
+            confirmText: 'Supprimer',
+            cancelText: 'Annuler',
+            type: 'danger'
+        });
+        if (!ok) return;
         try {
             await donationService.delete(id);
             fetchDonations();

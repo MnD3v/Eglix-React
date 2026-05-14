@@ -2,6 +2,7 @@ import { useState, useEffect } from 'react';
 import { Outlet, Link, useLocation, useNavigate } from 'react-router-dom';
 import { useAuth } from '../context/AuthContext';
 import { useChurch } from '../context/ChurchContext';
+import { useNotification } from '../context/NotificationContext';
 import ChurchSwitcherModal from './ChurchSwitcherModal';
 import SpotlightModal from './SpotlightModal';
 
@@ -144,10 +145,12 @@ export default function Layout() {
     const location = useLocation();
     const navigate = useNavigate();
     const { user, signOut } = useAuth();
-    const { currentChurch } = useChurch();
+    const { currentChurch, userRole, userPermissions } = useChurch();
+    const { confirm } = useNotification();
     const [isSidebarOpen, setIsSidebarOpen] = useState(false);
     const [isChurchModalOpen, setIsChurchModalOpen] = useState(false);
     const [isAddMenuOpen, setIsAddMenuOpen] = useState(false);
+    const [isUserMenuOpen, setIsUserMenuOpen] = useState(false);
     const [isSpotlightOpen, setIsSpotlightOpen] = useState(false);
 
     useEffect(() => {
@@ -175,38 +178,89 @@ export default function Layout() {
     const userName = user?.email?.split('@')[0] || 'Utilisateur';
     const userEmail = user?.email || '';
 
-    const navigation = [
-        { name: 'Accueil', href: '/', icon: Icons.Home },
+    // Permissions checking logic
+    const isAdmin = userRole === 'owner' || userRole === 'admin';
+
+    const hasSectionAccess = (section) => {
+        if (isAdmin) return true;
+        // Always give access to main dashboard and settings
+        if (section === 'home' || section === 'settings') return true;
+        
+        const sections = userPermissions?.sections || {};
+        return !!sections[section];
+    };
+
+    const hasAnnexAccess = () => {
+        if (isAdmin) return true;
+        const annexesPerms = userPermissions?.annexes;
+        return !!(annexesPerms?.is_general_manager || (annexesPerms?.managed_annex_ids && annexesPerms.managed_annex_ids.length > 0));
+    };
+
+    const rawNavigation = [
+        { name: 'Accueil', href: '/', icon: Icons.Home, key: 'home' },
         { 
             name: 'Communauté', 
             icon: Icons.Users,
+            key: 'community',
             submenu: [
-                { name: 'Membres', href: '/members', icon: Icons.Users },
-                { name: 'Groupes', href: '/groups', icon: Icons.Group },
-                { name: 'Invités', href: '/guests', icon: Icons.UserAdd },
-            ]
+                { name: 'Membres', href: '/members', icon: Icons.Users, key: 'members' },
+                { name: 'Groupes', href: '/groups', icon: Icons.Group, key: 'groups' },
+                { name: 'Invités', href: '/guests', icon: Icons.UserAdd, key: 'guests' },
+            ].filter(sub => hasSectionAccess(sub.key))
         },
-        { name: 'Annexes', href: '/annexes', icon: Icons.Annexe },
+        { name: 'Annexes', href: '/annexes', icon: Icons.Annexe, key: 'annexes' },
         { 
             name: 'Finances', 
             icon: Icons.Money,
+            key: 'finances',
             submenu: [
-                { name: 'Dîmes', href: '/tithes', icon: Icons.Tithe },
-                { name: 'Offrandes', href: '/offerings', icon: Icons.Gift },
-                { name: 'Dons', href: '/donations', icon: Icons.Donation },
-                { name: 'Dépenses', href: '/expenses', icon: Icons.Expense },
-            ]
+                { name: 'Dîmes', href: '/tithes', icon: Icons.Tithe, key: 'tithes' },
+                { name: 'Offrandes', href: '/offerings', icon: Icons.Gift, key: 'offerings' },
+                { name: 'Dons', href: '/donations', icon: Icons.Donation, key: 'donations' },
+                { name: 'Dépenses', href: '/expenses', icon: Icons.Expense, key: 'expenses' },
+            ].filter(sub => hasSectionAccess(sub.key))
         },
-        { name: 'Projets', href: '/projects', icon: Icons.Project },
-        { name: 'Journal', href: '/journal', icon: Icons.Journal },
-        { name: 'Administration', href: '/administration', icon: Icons.AdminBoard },
-        { name: 'Documents', href: '/documents', icon: Icons.Documents },
-        { name: 'Paramètres', href: '/settings', icon: Icons.Settings },
+        { name: 'Projets', href: '/projects', icon: Icons.Project, key: 'projects' },
+        { name: 'Journal', href: '/journal', icon: Icons.Journal, key: 'journal' },
+        { name: 'Administration', href: '/administration', icon: Icons.AdminBoard, key: 'administration' },
+        { name: 'Documents', href: '/documents', icon: Icons.Documents, key: 'documents' },
+        { name: 'Paramètres', href: '/settings', icon: Icons.Settings, key: 'settings' },
     ];
 
+    // Filter out top-level items user doesn't have access to
+    const navigation = rawNavigation.filter(item => {
+        if (item.key === 'annexes') return hasAnnexAccess();
+        if (item.submenu) {
+            // Only show groups like Communauté or Finances if they have at least one accessible child
+            return item.submenu.length > 0;
+        }
+        return hasSectionAccess(item.key);
+    });
+
+    // Check if user can add anything to show/hide the Quick Add (+) button
+    const hasAnyAddPermission = isAdmin || [
+        'members', 'tithes', 'offerings', 'donations', 'expenses', 'projects', 'journal'
+    ].some(key => hasSectionAccess(key));
+
     const handleSignOut = async () => {
-        await signOut();
-        navigate('/login');
+        setIsUserMenuOpen(false);
+        const ok = await confirm({
+            title: 'Déconnexion',
+            message: 'Êtes-vous sûr de vouloir vous déconnecter ? Vous devrez vous reconnecter pour accéder à votre espace.',
+            confirmText: 'Se déconnecter',
+            cancelText: 'Annuler',
+            type: 'warning'
+        });
+        if (!ok) return;
+
+        try {
+            await signOut();
+        } catch (err) {
+            console.error("Erreur lors de la déconnexion:", err);
+        } finally {
+            // Toujours rediriger vers login pour assurer une bonne expérience utilisateur
+            navigate('/login');
+        }
     };
 
     const ChurchSwitcher = () => (
@@ -451,113 +505,143 @@ export default function Layout() {
                         {/* Top Right Actions */}
                         <div className="flex items-center gap-3">
                             {/* Add Shortcut Menu */}
-                            <div className="relative">
-                                <button
-                                    onClick={() => setIsAddMenuOpen(!isAddMenuOpen)}
-                                    className="w-10 h-10 flex items-center justify-center bg-gray-100 text-gray-600 rounded-full hover:bg-gray-200 transition-colors"
+                            {hasAnyAddPermission && (
+                                <div className="relative">
+                                    <button
+                                        onClick={() => setIsAddMenuOpen(!isAddMenuOpen)}
+                                        className="w-10 h-10 flex items-center justify-center bg-gray-100 text-gray-600 rounded-full hover:bg-gray-200 transition-colors"
+                                    >
+                                        <Icons.Plus />
+                                    </button>
+
+                                    {isAddMenuOpen && (
+                                        <>
+                                            {/* Overlay to close menu */}
+                                            <div className="fixed inset-0 z-40" onClick={() => setIsAddMenuOpen(false)} />
+                                            
+                                            <div className="absolute right-0 top-full mt-2 w-56 bg-white rounded-xl shadow-xl border border-gray-100 z-50 overflow-hidden">
+                                                <div className="px-4 py-2 border-b border-gray-50 bg-gray-50/50">
+                                                    <p className="text-[10px] font-bold text-gray-400 uppercase tracking-wider">Ajouter un élément</p>
+                                                </div>
+                                                <div className="p-2 space-y-0.5">
+                                                    {hasSectionAccess('members') && (
+                                                        <Link
+                                                            to="/members/new"
+                                                            onClick={() => setIsAddMenuOpen(false)}
+                                                            className="flex items-center gap-3 px-3 py-2 text-sm text-gray-700 hover:bg-gray-50 rounded-lg transition-colors"
+                                                        >
+                                                            <span className="text-blue-500"><Icons.Users /></span>
+                                                            <span>Membre</span>
+                                                        </Link>
+                                                    )}
+                                                    {hasSectionAccess('tithes') && (
+                                                        <Link
+                                                            to="/tithes/new"
+                                                            onClick={() => setIsAddMenuOpen(false)}
+                                                            className="flex items-center gap-3 px-3 py-2 text-sm text-gray-700 hover:bg-gray-50 rounded-lg transition-colors"
+                                                        >
+                                                            <span className="text-emerald-500"><Icons.Tithe /></span>
+                                                            <span>Dîme</span>
+                                                        </Link>
+                                                    )}
+                                                    {hasSectionAccess('offerings') && (
+                                                        <Link
+                                                            to="/offerings/new"
+                                                            onClick={() => setIsAddMenuOpen(false)}
+                                                            className="flex items-center gap-3 px-3 py-2 text-sm text-gray-700 hover:bg-gray-50 rounded-lg transition-colors"
+                                                        >
+                                                            <span className="text-purple-500"><Icons.Gift /></span>
+                                                            <span>Offrande</span>
+                                                        </Link>
+                                                    )}
+                                                    {hasSectionAccess('donations') && (
+                                                        <Link
+                                                            to="/donations/new"
+                                                            onClick={() => setIsAddMenuOpen(false)}
+                                                            className="flex items-center gap-3 px-3 py-2 text-sm text-gray-700 hover:bg-gray-50 rounded-lg transition-colors"
+                                                        >
+                                                            <span className="text-pink-500"><Icons.Donation /></span>
+                                                            <span>Don</span>
+                                                        </Link>
+                                                    )}
+                                                    {hasSectionAccess('expenses') && (
+                                                        <Link
+                                                            to="/expenses/new"
+                                                            onClick={() => setIsAddMenuOpen(false)}
+                                                            className="flex items-center gap-3 px-3 py-2 text-sm text-gray-700 hover:bg-gray-50 rounded-lg transition-colors"
+                                                        >
+                                                            <span className="text-rose-500"><Icons.Expense /></span>
+                                                            <span>Dépense</span>
+                                                        </Link>
+                                                    )}
+                                                    {hasSectionAccess('projects') && (
+                                                        <Link
+                                                            to="/projects/new"
+                                                            onClick={() => setIsAddMenuOpen(false)}
+                                                            className="flex items-center gap-3 px-3 py-2 text-sm text-gray-700 hover:bg-gray-50 rounded-lg transition-colors"
+                                                        >
+                                                            <span className="text-amber-500"><Icons.Project /></span>
+                                                            <span>Projet</span>
+                                                        </Link>
+                                                    )}
+                                                    {hasSectionAccess('journal') && (
+                                                        <Link
+                                                            to="/journal/new"
+                                                            onClick={() => setIsAddMenuOpen(false)}
+                                                            className="flex items-center gap-3 px-3 py-2 text-sm text-gray-700 hover:bg-gray-50 rounded-lg transition-colors"
+                                                        >
+                                                            <span className="text-indigo-500"><Icons.Journal /></span>
+                                                            <span>Entrée Journal</span>
+                                                        </Link>
+                                                    )}
+                                                </div>
+                                            </div>
+                                        </>
+                                    )}
+                                </div>
+                            )}
+
+
+                            {/* User Menu */}
+                            <div className="relative ml-1">
+                                <button 
+                                    onClick={() => setIsUserMenuOpen(!isUserMenuOpen)}
+                                    className="w-10 h-10 flex items-center justify-center bg-gray-100 text-gray-900 rounded-full hover:bg-gray-200 transition-all"
                                 >
-                                    <Icons.Plus />
+                                    <Icons.User />
                                 </button>
 
-                                {isAddMenuOpen && (
+                                {isUserMenuOpen && (
                                     <>
                                         {/* Overlay to close menu */}
-                                        <div className="fixed inset-0 z-40" onClick={() => setIsAddMenuOpen(false)} />
+                                        <div className="fixed inset-0 z-40" onClick={() => setIsUserMenuOpen(false)} />
                                         
-                                        <div className="absolute right-0 top-full mt-2 w-56 bg-white rounded-xl shadow-xl border border-gray-100 z-50 overflow-hidden">
-                                            <div className="px-4 py-2 border-b border-gray-50 bg-gray-50/50">
-                                                <p className="text-[10px] font-bold text-gray-400 uppercase tracking-wider">Ajouter un élément</p>
+                                        {/* Dropdown Menu */}
+                                        <div className="absolute right-0 top-full mt-2 w-56 bg-white rounded-xl shadow-xl border border-gray-100 z-50 overflow-hidden animate-fadeIn">
+                                            <div className="px-4 py-3 border-b border-gray-50">
+                                                <p className="text-sm font-bold text-gray-900">{userName}</p>
+                                                <p className="text-xs text-gray-500 truncate">{userEmail}</p>
                                             </div>
-                                            <div className="p-2 space-y-0.5">
-                                                <Link
-                                                    to="/members/new"
-                                                    onClick={() => setIsAddMenuOpen(false)}
-                                                    className="flex items-center gap-3 px-3 py-2 text-sm text-gray-700 hover:bg-gray-50 rounded-lg transition-colors"
+                                            <div className="p-2">
+                                                <Link 
+                                                    to="/settings" 
+                                                    onClick={() => setIsUserMenuOpen(false)}
+                                                    className="flex items-center gap-3 px-3 py-2 text-sm text-gray-600 hover:bg-gray-50 rounded-lg transition-colors"
                                                 >
-                                                    <span className="text-blue-500"><Icons.Users /></span>
-                                                    <span>Membre</span>
+                                                    <Icons.Settings />
+                                                    Paramètres
                                                 </Link>
-                                                <Link
-                                                    to="/tithes/new"
-                                                    onClick={() => setIsAddMenuOpen(false)}
-                                                    className="flex items-center gap-3 px-3 py-2 text-sm text-gray-700 hover:bg-gray-50 rounded-lg transition-colors"
+                                                <button
+                                                    onClick={handleSignOut}
+                                                    className="w-full flex items-center gap-3 px-3 py-2 text-sm text-red-600 hover:bg-red-50 rounded-lg transition-colors"
                                                 >
-                                                    <span className="text-emerald-500"><Icons.Tithe /></span>
-                                                    <span>Dîme</span>
-                                                </Link>
-                                                <Link
-                                                    to="/offerings/new"
-                                                    onClick={() => setIsAddMenuOpen(false)}
-                                                    className="flex items-center gap-3 px-3 py-2 text-sm text-gray-700 hover:bg-gray-50 rounded-lg transition-colors"
-                                                >
-                                                    <span className="text-purple-500"><Icons.Gift /></span>
-                                                    <span>Offrande</span>
-                                                </Link>
-                                                <Link
-                                                    to="/donations/new"
-                                                    onClick={() => setIsAddMenuOpen(false)}
-                                                    className="flex items-center gap-3 px-3 py-2 text-sm text-gray-700 hover:bg-gray-50 rounded-lg transition-colors"
-                                                >
-                                                    <span className="text-pink-500"><Icons.Donation /></span>
-                                                    <span>Don</span>
-                                                </Link>
-                                                <Link
-                                                    to="/expenses/new"
-                                                    onClick={() => setIsAddMenuOpen(false)}
-                                                    className="flex items-center gap-3 px-3 py-2 text-sm text-gray-700 hover:bg-gray-50 rounded-lg transition-colors"
-                                                >
-                                                    <span className="text-rose-500"><Icons.Expense /></span>
-                                                    <span>Dépense</span>
-                                                </Link>
-                                                <Link
-                                                    to="/projects/new"
-                                                    onClick={() => setIsAddMenuOpen(false)}
-                                                    className="flex items-center gap-3 px-3 py-2 text-sm text-gray-700 hover:bg-gray-50 rounded-lg transition-colors"
-                                                >
-                                                    <span className="text-amber-500"><Icons.Project /></span>
-                                                    <span>Projet</span>
-                                                </Link>
-                                                <Link
-                                                    to="/journal/new"
-                                                    onClick={() => setIsAddMenuOpen(false)}
-                                                    className="flex items-center gap-3 px-3 py-2 text-sm text-gray-700 hover:bg-gray-50 rounded-lg transition-colors"
-                                                >
-                                                    <span className="text-indigo-500"><Icons.Journal /></span>
-                                                    <span>Entrée Journal</span>
-                                                </Link>
+                                                    <Icons.SignOut />
+                                                    Déconnexion
+                                                </button>
                                             </div>
                                         </div>
                                     </>
                                 )}
-                            </div>
-
-
-                            {/* User Menu */}
-                            <div className="relative group ml-1">
-                                <button className="w-10 h-10 flex items-center justify-center bg-gray-100 text-gray-900 rounded-full hover:bg-gray-200 transition-all">
-                                    <Icons.User />
-                                </button>
-
-                                {/* Dropdown Menu */}
-                                <div className="absolute right-0 top-full mt-2 w-56 bg-white rounded-xl shadow-xl border border-gray-100 opacity-0 invisible group-hover:opacity-100 group-hover:visible transition-all z-50 overflow-hidden">
-                                    <div className="px-4 py-3 border-b border-gray-50">
-                                        <p className="text-sm font-bold text-gray-900">{userName}</p>
-                                        <p className="text-xs text-gray-500 truncate">{userEmail}</p>
-                                    </div>
-                                    <div className="p-2">
-                                        <Link to="/settings" className="flex items-center gap-3 px-3 py-2 text-sm text-gray-600 hover:bg-gray-50 rounded-lg transition-colors">
-                                            <Icons.Settings />
-                                            Paramètres
-                                        </Link>
-                                        <button
-                                            onClick={handleSignOut}
-                                            className="w-full flex items-center gap-3 px-3 py-2 text-sm text-red-600 hover:bg-red-50 rounded-lg transition-colors"
-                                        >
-                                            <Icons.SignOut />
-                                            Déconnexion
-                                        </button>
-                                    </div>
-                                </div>
                             </div>
                         </div>
 

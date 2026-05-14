@@ -1,6 +1,7 @@
 import { useState, useEffect } from 'react';
 import { Link, useNavigate } from 'react-router-dom';
 import { useChurch } from '../../context/ChurchContext';
+import { useNotification } from '../../context/NotificationContext';
 import { documentService } from '../../services/documentService';
 
 function FileIcon({ type, ext }) {
@@ -36,6 +37,7 @@ function formatSize(bytes) {
 
 export default function DocumentsList() {
     const { currentChurch } = useChurch();
+    const { confirm } = useNotification();
     const navigate = useNavigate();
     const [documents, setDocuments] = useState([]);
     const [folders, setFolders] = useState([]);
@@ -68,7 +70,14 @@ export default function DocumentsList() {
     useEffect(() => { fetchAll(); }, [currentChurch, filters]);
 
     const handleDelete = async (doc) => {
-        if (!window.confirm(`Supprimer "${doc.name}" ?`)) return;
+        const ok = await confirm({
+            title: 'Supprimer le document',
+            message: `Voulez-vous vraiment supprimer le fichier "${doc.name}" ? Cette action supprimera également le fichier stocké.`,
+            confirmText: 'Supprimer',
+            cancelText: 'Annuler',
+            type: 'danger'
+        });
+        if (!ok) return;
         try {
             await documentService.delete(doc.id);
             fetchAll();
@@ -94,7 +103,14 @@ export default function DocumentsList() {
     };
 
     const handleDeleteFolder = async (folder) => {
-        if (!window.confirm(`Supprimer le dossier "${folder.name}" ? Les documents à l'intérieur ne seront pas supprimés.`)) return;
+        const ok = await confirm({
+            title: 'Supprimer le dossier',
+            message: `Supprimer le dossier "${folder.name}" ? Les documents contenus à l'intérieur ne seront pas supprimés mais deviendront orphelins.`,
+            confirmText: 'Supprimer',
+            cancelText: 'Annuler',
+            type: 'danger'
+        });
+        if (!ok) return;
         try {
             await documentService.deleteFolder(folder.id);
             fetchAll();

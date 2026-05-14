@@ -2,10 +2,13 @@ import { useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { supabase } from '../../supabaseClient';
 import { useAuth } from '../../context/AuthContext';
+import { useNotification } from '../../context/NotificationContext';
+import Spinner from '../../components/Spinner';
 
 export default function CreateChurch() {
     const navigate = useNavigate();
-    const { user } = useAuth();
+    const { user, signOut } = useAuth();
+    const { confirm } = useNotification();
     const [loading, setLoading] = useState(false);
     const [error, setError] = useState(null);
     const [formData, setFormData] = useState({
@@ -20,6 +23,25 @@ export default function CreateChurch() {
     const handleChange = (e) => {
         const { name, value } = e.target;
         setFormData(prev => ({ ...prev, [name]: value }));
+    };
+
+    const handleSignOut = async () => {
+        const ok = await confirm({
+            title: 'Déconnexion',
+            message: 'Voulez-vous vraiment vous déconnecter ? Vos progrès dans ce formulaire seront perdus.',
+            confirmText: 'Déconnexion',
+            cancelText: 'Rester',
+            type: 'warning'
+        });
+        if (!ok) return;
+
+        try {
+            await signOut();
+            navigate('/login');
+        } catch (err) {
+            console.error(err);
+            window.location.href = '/login';
+        }
     };
 
     const handleSubmit = async (e) => {
@@ -67,7 +89,20 @@ export default function CreateChurch() {
     };
 
     return (
-        <div className="min-h-screen bg-gray-50 flex flex-col justify-center py-12 sm:px-6 lg:px-8">
+        <div className="min-h-screen bg-gray-50 flex flex-col justify-center py-12 sm:px-6 lg:px-8 relative">
+            {/* Top Navigation Action */}
+            <div className="absolute top-6 right-6">
+                <button
+                    onClick={handleSignOut}
+                    className="flex items-center gap-2 px-4 py-2 text-sm font-medium text-gray-600 bg-white hover:bg-gray-100 border border-gray-200 rounded-xl transition-all shadow-sm"
+                >
+                    <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                        <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M17 16l4-4m0 0l-4-4m4 4H7m6 4v1a3 3 0 01-3 3H6a3 3 0 01-3-3V7a3 3 0 013-3h4a3 3 0 013 3v1" />
+                    </svg>
+                    Déconnexion
+                </button>
+            </div>
+
             <div className="sm:mx-auto sm:w-full sm:max-w-2xl">
                 <div className="text-center mb-8">
                     <div className="mx-auto h-16 w-16 bg-primary rounded-xl flex items-center justify-center shadow-lg mb-4">
@@ -201,13 +236,7 @@ export default function CreateChurch() {
                             className="w-full flex justify-center py-3 px-4 border border-transparent rounded-xl shadow-sm text-sm font-medium text-black bg-primary hover:bg-primary-dark focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-primary transition-all disabled:opacity-70 disabled:cursor-not-allowed"
                         >
                             {loading ? (
-                                <span className="flex items-center gap-2">
-                                    <svg className="animate-spin h-4 w-4 text-white" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24">
-                                        <circle className="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" strokeWidth="4"></circle>
-                                        <path className="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z"></path>
-                                    </svg>
-                                    Création en cours...
-                                </span>
+                                <Spinner size="md" className="text-black" />
                             ) : (
                                 "Créer mon église"
                             )}

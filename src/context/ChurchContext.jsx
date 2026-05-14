@@ -10,6 +10,9 @@ const ChurchContext = createContext();
 export function ChurchProvider({ children }) {
     const [currentChurch, setCurrentChurch] = useState(null);
     const [userChurches, setUserChurches] = useState([]);
+    const [memberships, setMemberships] = useState([]);
+    const [userRole, setUserRole] = useState(null);
+    const [userPermissions, setUserPermissions] = useState({});
     const [loading, setLoading] = useState(true);
     const [error, setError] = useState(null);
     const { user } = useAuth();
@@ -21,10 +24,10 @@ export function ChurchProvider({ children }) {
         try {
             setLoading(true);
 
-            // Fetch all churches associated with the user
+            // Fetch all churches associated with the user with their roles and permissions
             const { data: churchUsers, error: cuError } = await supabase
                 .from('church_users')
-                .select('church_id, churches(*)')
+                .select('church_id, role, permissions, churches(*)')
                 .eq('user_id', user.id);
 
             if (cuError) {
@@ -33,6 +36,7 @@ export function ChurchProvider({ children }) {
             }
 
             if (churchUsers && churchUsers.length > 0) {
+                setMemberships(churchUsers);
                 const churches = churchUsers.map(cu => cu.churches).filter(Boolean);
                 setUserChurches(churches);
 
@@ -45,6 +49,7 @@ export function ChurchProvider({ children }) {
                     return churches[0];
                 });
             } else {
+                setMemberships([]);
                 setUserChurches([]);
                 setCurrentChurch(null);
             }
@@ -61,8 +66,28 @@ export function ChurchProvider({ children }) {
             loadUserChurches();
         } else {
             setLoading(false);
+            setMemberships([]);
+            setUserChurches([]);
+            setCurrentChurch(null);
         }
     }, [user, loadUserChurches]);
+
+    // Synchronize role and permissions whenever currentChurch or memberships changes
+    useEffect(() => {
+        if (currentChurch && memberships.length > 0) {
+            const activeMembership = memberships.find(m => m.church_id === currentChurch.id);
+            if (activeMembership) {
+                setUserRole(activeMembership.role || 'user');
+                setUserPermissions(activeMembership.permissions || {});
+            } else {
+                setUserRole(null);
+                setUserPermissions({});
+            }
+        } else {
+            setUserRole(null);
+            setUserPermissions({});
+        }
+    }, [currentChurch, memberships]);
 
     const switchChurch = (churchId) => {
         const church = userChurches.find(c => c.id === churchId);
@@ -85,6 +110,8 @@ export function ChurchProvider({ children }) {
     const value = {
         currentChurch,
         userChurches,
+        userRole,
+        userPermissions,
         setCurrentChurch,
         switchChurch,
         loading,

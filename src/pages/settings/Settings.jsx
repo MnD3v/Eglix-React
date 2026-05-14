@@ -1,9 +1,13 @@
 import { useState, useEffect } from 'react';
+import { Link } from 'react-router-dom';
 import { useChurch } from '../../context/ChurchContext';
 import { memberService } from '../../services/memberService';
+import Spinner from '../../components/Spinner';
 
 export default function Settings() {
-    const { currentChurch, refreshChurch } = useChurch();
+    const { currentChurch, refreshChurch, userRole, userPermissions } = useChurch();
+    const isAdmin = userRole === 'owner' || userRole === 'admin';
+    const canEditChurch = isAdmin || !!(userPermissions?.sections?.edit_church);
     const [copied, setCopied] = useState(false);
     const [isEditing, setIsEditing] = useState(false);
     const [loading, setLoading] = useState(false);
@@ -131,22 +135,24 @@ export default function Settings() {
                         </div>
                     </div>
 
-                    <div className="bg-white p-6 rounded-xl border border-gray-50 shadow-[0_2px_10px_rgba(0,0,0,0.02)] flex items-center gap-6 group cursor-pointer hover:border-gray-200 transition-all">
-                        <div className="w-12 h-12 bg-blue-50 rounded-xl flex items-center justify-center flex-shrink-0 text-blue-600">
-                            <svg className="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 4.354a4 4 0 110 5.292M15 21H3v-1a6 6 0 0112 0v1zm0 0h6v-1a6 6 0 00-9-5.197M13 7a4 4 0 11-8 0 4 4 0 018 0z" />
-                            </svg>
-                        </div>
-                        <div className="flex-1">
-                            <div className="flex items-center justify-between">
-                                <h3 className="font-bold text-gray-900">Équipe & Collaborateurs</h3>
-                                <svg className="w-5 h-5 text-gray-300 group-hover:text-gray-400 transition-colors" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M14 5l7 7-7 7" />
+                    {isAdmin && (
+                        <Link to="/settings/collaborators" className="bg-white p-6 rounded-xl border border-gray-50 shadow-[0_2px_10px_rgba(0,0,0,0.02)] flex items-center gap-6 group cursor-pointer hover:border-gray-200 transition-all">
+                            <div className="w-12 h-12 bg-blue-50 rounded-xl flex items-center justify-center flex-shrink-0 text-blue-600">
+                                <svg className="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 4.354a4 4 0 110 5.292M15 21H3v-1a6 6 0 0112 0v1zm0 0h6v-1a6 6 0 00-9-5.197M13 7a4 4 0 11-8 0 4 4 0 018 0z" />
                                 </svg>
                             </div>
-                            <p className="text-sm text-gray-500 mt-1">Gérez vos collaborateurs et suivez leur activité sur votre plateforme.</p>
-                        </div>
-                    </div>
+                            <div className="flex-1">
+                                <div className="flex items-center justify-between">
+                                    <h3 className="font-bold text-gray-900">Équipe & Collaborateurs</h3>
+                                    <svg className="w-5 h-5 text-gray-300 group-hover:text-gray-400 transition-colors" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                        <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M14 5l7 7-7 7" />
+                                    </svg>
+                                </div>
+                                <p className="text-sm text-gray-500 mt-1">Gérez vos collaborateurs et suivez leur activité sur votre plateforme.</p>
+                            </div>
+                        </Link>
+                    )}
                 </div>
             </div>
 
@@ -189,7 +195,7 @@ export default function Settings() {
             <div className="bg-white rounded-xl p-8 border border-gray-100 shadow-sm">
                 <div className="flex items-center justify-between mb-6">
                     <h2 className="text-lg font-bold text-gray-900">Informations de l'Église</h2>
-                    {!isEditing ? (
+                    {canEditChurch && !isEditing && (
                         <button
                             onClick={() => setIsEditing(true)}
                             className="text-primary hover:text-primary-dark font-medium flex items-center gap-2"
@@ -199,7 +205,8 @@ export default function Settings() {
                             </svg>
                             Modifier
                         </button>
-                    ) : (
+                    )}
+                    {canEditChurch && isEditing && (
                         <div className="flex items-center gap-3">
                             <button
                                 onClick={() => setIsEditing(false)}
@@ -211,9 +218,11 @@ export default function Settings() {
                             <button
                                 onClick={handleSave}
                                 disabled={loading}
-                                className="bg-primary text-black px-4 py-2 rounded-xl font-medium hover:bg-primary-dark transition-colors shadow-sm disabled:opacity-50"
+                                className="bg-primary text-black px-4 py-2 rounded-xl font-medium hover:bg-primary-dark transition-colors shadow-sm disabled:opacity-50 flex items-center justify-center gap-2 min-w-[110px]"
                             >
-                                {loading ? 'Enregistrement...' : 'Enregistrer'}
+                                {loading ? (
+                                    <Spinner size="sm" className="text-black" />
+                                ) : 'Enregistrer'}
                             </button>
                         </div>
                     )}

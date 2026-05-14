@@ -47,7 +47,13 @@ export const titheService = {
         const sanitized = { ...data };
         // Remove joined tables data
         delete sanitized.members;
-        // donor_name is kept (null for member/anonymous, text for external)
+        
+        // Remove donor_name if it's null, undefined or empty to prevent PGRST204 schema cache errors
+        if (!sanitized.donor_name || sanitized.donor_name.trim() === '') {
+            delete sanitized.donor_name;
+        } else {
+            sanitized.donor_name = sanitized.donor_name.trim();
+        }
 
         const dateFields = ['date'];
         dateFields.forEach(field => {

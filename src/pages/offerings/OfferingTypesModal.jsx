@@ -1,7 +1,9 @@
 import React, { useState, useEffect } from 'react';
 import { offeringService } from '../../services/offeringService';
+import { useNotification } from '../../context/NotificationContext';
 
 export default function OfferingTypesModal({ isOpen, onClose, churchId }) {
+    const { confirm } = useNotification();
     const [types, setTypes] = useState([]);
     const [loading, setLoading] = useState(true);
     const [newType, setNewType] = useState('');
@@ -60,7 +62,14 @@ export default function OfferingTypesModal({ isOpen, onClose, churchId }) {
     };
 
     const handleDelete = async (id) => {
-        if (!window.confirm("Êtes-vous sûr de vouloir supprimer ce type d'offrande ?")) return;
+        const ok = await confirm({
+            title: "Supprimer le type d'offrande",
+            message: "Êtes-vous sûr de vouloir supprimer ce type d'offrande ?",
+            confirmText: "Supprimer",
+            cancelText: "Annuler",
+            type: "danger"
+        });
+        if (!ok) return;
 
         try {
             await offeringService.deleteType(id);

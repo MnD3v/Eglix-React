@@ -1,5 +1,4 @@
--- Ajout d'un champ donor_name sur la table tithes
--- Permet d'enregistrer des dîmes de personnes non-membres (nom libre)
+
 do $$
 begin
   if not exists (

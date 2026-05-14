@@ -171,11 +171,11 @@ export default function TitheDetails() {
                         </div>
 
                         <div>
-                            <h3 className="text-sm font-medium text-gray-500 uppercase tracking-wider mb-4">Membre</h3>
+                            <h3 className="text-sm font-medium text-gray-500 uppercase tracking-wider mb-4">Donateur</h3>
                             {tithe.members ? (
                                 <div className="flex items-start gap-4 p-4 rounded-xl bg-gray-50 border border-gray-100">
                                     <div className="flex-shrink-0 h-10 w-10 rounded-full bg-primary/10 flex items-center justify-center text-primary font-bold text-sm">
-                                        {tithe.members.first_name[0]}{tithe.members.last_name[0]}
+                                        {tithe.members.first_name[0].toUpperCase()}{tithe.members.last_name[0].toUpperCase()}
                                     </div>
                                     <div>
                                         <p className="text-sm font-bold text-gray-900">
@@ -193,6 +193,18 @@ export default function TitheDetails() {
                                         >
                                             Voir le profil
                                         </Link>
+                                    </div>
+                                </div>
+                            ) : tithe.donor_name ? (
+                                <div className="flex items-start gap-4 p-4 rounded-xl bg-gray-50 border border-gray-100">
+                                    <div className="flex-shrink-0 h-10 w-10 rounded-full bg-gray-200 flex items-center justify-center text-gray-600 font-bold text-sm">
+                                        {tithe.donor_name[0].toUpperCase()}
+                                    </div>
+                                    <div>
+                                        <p className="text-sm font-bold text-gray-900">
+                                            {tithe.donor_name}
+                                        </p>
+                                        <p className="text-xs text-gray-500 italic mt-0.5">Non-membre</p>
                                     </div>
                                 </div>
                             ) : (
