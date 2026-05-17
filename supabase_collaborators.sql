@@ -3,7 +3,7 @@
 -- Exécutez ce script dans l'éditeur SQL de Supabase pour configurer la base.
 -- ======================================================================
 
--- 1. Assurer une relation claire entre church_users et profiles pour faciliter les jointures PostgREST
+-- 1. Assurer une relation claire entre church_users et profiles pour faciliter les jointures PostgREST 
 DO $$ 
 BEGIN 
   -- Tente d'ajouter la contrainte si elle n'existe pas

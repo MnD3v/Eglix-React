@@ -17,6 +17,7 @@ import ProjectForm from "./pages/projects/ProjectForm";
 import ProjectDetails from "./pages/projects/ProjectDetails";
 import Login from "./pages/auth/Login";
 import Register from "./pages/auth/Register";
+import LandingPage from "./pages/public/LandingPage";
 import PublicMemberForm from "./pages/public/PublicMemberForm";
 import Settings from "./pages/settings/Settings";
 import CollaboratorsList from "./pages/settings/CollaboratorsList";
@@ -63,6 +64,22 @@ function ProtectedRoute({ children }) {
   return children;
 }
 
+function RootLayout() {
+  const { user, loading } = useAuth();
+  const location = useLocation();
+
+  if (loading) return <div className="h-screen flex items-center justify-center"><Loader /></div>;
+
+  if (!user) {
+    if (location.pathname === '/') {
+      return <LandingPage />;
+    }
+    return <Navigate to="/login" state={{ from: location }} replace />;
+  }
+
+  return <Layout />;
+}
+
 function App() {
   return (
     <AuthProvider>
@@ -83,11 +100,7 @@ function App() {
               </ProtectedRoute>
             } />
 
-            <Route path="/" element={
-              <ProtectedRoute>
-                <Layout />
-              </ProtectedRoute>
-            }>
+            <Route path="/" element={<RootLayout />}>
               <Route index element={<Dashboard />} />
 
               {/* Groups Routes */}

@@ -18,17 +18,20 @@ export function ChurchProvider({ children }) {
     const { user } = useAuth();
     const location = useLocation();
 
+    const userId = user?.id;
+
     const loadUserChurches = useCallback(async () => {
-        if (!user) return;
+        if (!userId) return;
 
         try {
-            setLoading(true);
+            // Ne déclencher le chargement global que si on n'a pas encore chargé les églises
+            setLoading(prev => userChurches.length === 0 ? true : prev);
 
             // Fetch all churches associated with the user with their roles and permissions
             const { data: churchUsers, error: cuError } = await supabase
                 .from('church_users')
                 .select('church_id, role, permissions, churches(*)')
-                .eq('user_id', user.id);
+                .eq('user_id', userId);
 
             if (cuError) {
                 console.error('Error fetching user churches:', cuError);
@@ -59,10 +62,10 @@ export function ChurchProvider({ children }) {
         } finally {
             setLoading(false);
         }
-    }, [user]);
+    }, [userId, userChurches.length]);
 
     useEffect(() => {
-        if (user) {
+        if (userId) {
             loadUserChurches();
         } else {
             setLoading(false);
@@ -70,7 +73,7 @@ export function ChurchProvider({ children }) {
             setUserChurches([]);
             setCurrentChurch(null);
         }
-    }, [user, loadUserChurches]);
+    }, [userId, loadUserChurches]);
 
     // Synchronize role and permissions whenever currentChurch or memberships changes
     useEffect(() => {
