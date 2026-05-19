@@ -80,7 +80,7 @@ export default function LandingPage() {
                         </div>
                         {/* Actual dashboard image */}
                         <div className="bg-gray-50 rounded-xl flex overflow-hidden">
-                            <img src="https://i.ibb.co/C3xCCV4L/Frame-5-1-1.png" alt="Aperçu du tableau de bord Eglix" className="w-full h-auto object-cover" />
+                            <img src="/images/dashboard-preview.png" alt="Aperçu du tableau de bord Eglix" className="w-full h-auto object-cover" />
                         </div>
                         
                         {/* Overlay gradient to fade out bottom */}
