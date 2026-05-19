@@ -8,7 +8,9 @@ export default function Register() {
     const { signUp } = useAuth();
     const [fullName, setFullName] = useState('');
     const [email, setEmail] = useState('');
+    const [phone, setPhone] = useState('');
     const [password, setPassword] = useState('');
+    const [confirmPassword, setConfirmPassword] = useState('');
     const [loading, setLoading] = useState(false);
     const [error, setError] = useState(null);
 
@@ -16,6 +18,12 @@ export default function Register() {
         e.preventDefault();
         setLoading(true);
         setError(null);
+        if (password !== confirmPassword) {
+            setError('Les mots de passe ne correspondent pas.');
+            setLoading(false);
+            return;
+        }
+
         try {
             const { error } = await signUp({
                 email,
@@ -23,6 +31,7 @@ export default function Register() {
                 options: {
                     data: {
                         full_name: fullName,
+                        phone: phone,
                     },
                 },
             });
@@ -113,6 +122,47 @@ export default function Register() {
                                 onChange={(e) => setPassword(e.target.value)}
                                 className="premium-input"
                                 placeholder="Votre mot de passe"
+                            />
+                        </div>
+                    </div>
+
+                    <div>
+                        <label className="block text-sm font-bold text-gray-700 mb-2">
+                            Numéro de téléphone
+                        </label>
+                        <div className="premium-input-container">
+                            <span className="premium-input-icon">
+                                <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M3 5a2 2 0 012-2h3.28a1 1 0 01.948.684l1.498 4.493a1 1 0 01-.502 1.21l-2.257 1.13a11.042 11.042 0 005.516 5.516l1.13-2.257a1 1 0 011.21-.502l4.493 1.498a1 1 0 01.684.949V19a2 2 0 01-2 2h-1C9.716 21 3 14.284 3 6V5z" />
+                                </svg>
+                            </span>
+                            <input
+                                type="tel"
+                                value={phone}
+                                onChange={(e) => setPhone(e.target.value)}
+                                className="premium-input"
+                                placeholder="Votre numéro de téléphone"
+                            />
+                        </div>
+                    </div>
+
+                    <div>
+                        <label className="block text-sm font-bold text-gray-700 mb-2">
+                            Répéter le mot de passe <span className="text-red-500">*</span>
+                        </label>
+                        <div className="premium-input-container">
+                            <span className="premium-input-icon">
+                                <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 15v2m-6 4h12a2 2 0 002-2v-6a2 2 0 00-2-2H6a2 2 0 00-2 2v6a2 2 0 002 2zm10-10V7a4 4 0 00-8 0v4h8z" />
+                                </svg>
+                            </span>
+                            <input
+                                type="password"
+                                required
+                                value={confirmPassword}
+                                onChange={(e) => setConfirmPassword(e.target.value)}
+                                className="premium-input"
+                                placeholder="Répétez votre mot de passe"
                             />
                         </div>
                     </div>

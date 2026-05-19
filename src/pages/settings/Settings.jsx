@@ -156,6 +156,51 @@ export default function Settings() {
                 </div>
             </div>
 
+            {/* Abonnement Section */}
+            <div className="space-y-4">
+                <h2 className="text-xl font-bold font-serif text-gray-900 px-1">Abonnement</h2>
+                <div className="bg-white rounded-xl p-8 border border-gray-50 shadow-[0_2px_10px_rgba(0,0,0,0.02)]">
+                    <div className="flex flex-col md:flex-row md:items-center justify-between gap-6">
+                        <div className="flex items-center gap-6">
+                            <div className={`w-16 h-16 rounded-xl flex items-center justify-center flex-shrink-0 ${
+                                currentChurch.subscription_status === 'active' ? 'bg-green-50 text-green-600' :
+                                currentChurch.subscription_status === 'trial' ? 'bg-yellow-50 text-yellow-600' :
+                                'bg-red-50 text-red-600'
+                            }`}>
+                                <svg className="w-8 h-8" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 12l2 2 4-4m5.618-4.016A11.955 11.955 0 0112 2.944a11.955 11.955 0 01-8.618 3.04A12.02 12.02 0 003 9c0 5.591 3.824 10.29 9 11.622 5.176-1.332 9-6.03 9-11.622 0-1.042-.133-2.052-.382-3.016z" />
+                                </svg>
+                            </div>
+                            <div>
+                                <h3 className="text-lg font-bold text-gray-900 capitalize">Forfait {currentChurch.subscription_plan || 'Gratuit'}</h3>
+                                <div className="flex items-center gap-2 mt-1">
+                                    <span className={`px-2.5 py-0.5 rounded-full text-xs font-medium border ${
+                                        currentChurch.subscription_status === 'active' ? 'bg-green-50 text-green-700 border-green-200' :
+                                        currentChurch.subscription_status === 'trial' ? 'bg-yellow-50 text-yellow-700 border-yellow-200' :
+                                        'bg-red-50 text-red-700 border-red-200'
+                                    }`}>
+                                        {currentChurch.subscription_status === 'active' ? 'Actif' : 
+                                         currentChurch.subscription_status === 'trial' ? 'En Essai' : 'Inactif'}
+                                    </span>
+                                    {currentChurch.subscription_end_date && (
+                                        <span className="text-sm text-gray-500">
+                                            Expire le {new Date(currentChurch.subscription_end_date).toLocaleDateString('fr-FR')}
+                                        </span>
+                                    )}
+                                </div>
+                            </div>
+                        </div>
+                        <div>
+                            {isAdmin && (
+                                <Link to="/subscription" className="inline-block bg-primary text-black px-6 py-3 rounded-xl font-medium hover:bg-primary-dark transition-colors shadow-sm text-center">
+                                    Gérer mon offre
+                                </Link>
+                            )}
+                        </div>
+                    </div>
+                </div>
+            </div>
+
             {/* Invitation Section */}
             <div className="space-y-4">
                 <h2 className="text-xl font-bold font-serif text-gray-900 px-1">Invitation</h2>

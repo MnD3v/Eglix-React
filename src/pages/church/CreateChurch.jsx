@@ -1,5 +1,5 @@
 import { useState } from 'react';
-import { useNavigate } from 'react-router-dom';
+import { useNavigate, useSearchParams } from 'react-router-dom';
 import { supabase } from '../../supabaseClient';
 import { useAuth } from '../../context/AuthContext';
 import { useNotification } from '../../context/NotificationContext';
@@ -7,6 +7,7 @@ import Spinner from '../../components/Spinner';
 
 export default function CreateChurch() {
     const navigate = useNavigate();
+    const [searchParams] = useSearchParams();
     const { user, signOut } = useAuth();
     const { confirm } = useNotification();
     const [loading, setLoading] = useState(false);
@@ -54,9 +55,18 @@ export default function CreateChurch() {
             // Exclude website from insert if it doesn't exist in schema yet
             const { website, ...churchData } = formData;
 
+            // Ajouter 2 mois d'essai gratuit
+            const trialEndDate = new Date();
+            trialEndDate.setMonth(trialEndDate.getMonth() + 2);
+
             const { data: church, error: churchError } = await supabase
                 .from('churches')
-                .insert([churchData])
+                .insert([{
+                    ...churchData,
+                    subscription_status: 'trial',
+                    subscription_plan: searchParams.get('plan') || 'starter',
+                    subscription_end_date: trialEndDate.toISOString()
+                }])
                 .select()
                 .single();
 

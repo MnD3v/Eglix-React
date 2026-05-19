@@ -23,6 +23,8 @@ import Settings from "./pages/settings/Settings";
 import CollaboratorsList from "./pages/settings/CollaboratorsList";
 import CollaboratorForm from "./pages/settings/CollaboratorForm";
 import CreateChurch from "./pages/church/CreateChurch";
+import Subscription from "./pages/subscription/Subscription";
+import SuperAdminDashboard from "./pages/admin/SuperAdminDashboard";
 
 // New modules
 import ExpensesList from "./pages/expenses/ExpensesList";
@@ -64,6 +66,23 @@ function ProtectedRoute({ children }) {
   return children;
 }
 
+function SuperAdminRoute({ children }) {
+  const { user, loading } = useAuth();
+  const location = useLocation();
+
+  if (loading) return <div className="h-screen flex items-center justify-center"><Loader /></div>;
+
+  if (!user) {
+    return <Navigate to="/login" state={{ from: location }} replace />;
+  }
+
+  if (user.email !== 'em.djatika@gmail.com') {
+    return <Navigate to="/" replace />;
+  }
+
+  return children;
+}
+
 function RootLayout() {
   const { user, loading } = useAuth();
   const location = useLocation();
@@ -98,6 +117,20 @@ function App() {
               <ProtectedRoute>
                 <CreateChurch />
               </ProtectedRoute>
+            } />
+
+            {/* Subscription Route (Protected) */}
+            <Route path="/subscription" element={
+              <ProtectedRoute>
+                <Subscription />
+              </ProtectedRoute>
+            } />
+
+            {/* SuperAdmin Route (Protected) */}
+            <Route path="/admin" element={
+              <SuperAdminRoute>
+                <SuperAdminDashboard />
+              </SuperAdminRoute>
             } />
 
             <Route path="/" element={<RootLayout />}>

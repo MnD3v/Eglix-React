@@ -178,6 +178,11 @@ export default function Layout() {
     const userName = user?.email?.split('@')[0] || 'Utilisateur';
     const userEmail = user?.email || '';
 
+    const isTrial = currentChurch?.subscription_status === 'trial';
+    const trialDaysLeft = isTrial && currentChurch?.subscription_end_date 
+        ? Math.max(0, Math.ceil((new Date(currentChurch.subscription_end_date) - new Date()) / (1000 * 60 * 60 * 24)))
+        : 0;
+
     // Permissions checking logic
     const isAdmin = userRole === 'owner' || userRole === 'admin';
 
@@ -650,6 +655,31 @@ export default function Layout() {
 
                 {/* Page Content */}
                 <main className="pt-16 min-h-screen">
+                    {/* Trial Banner */}
+                    {isTrial && (
+                        <div className="bg-amber-50 border-b border-amber-200 px-4 py-3 sm:px-6 lg:px-8">
+                            <div className="flex items-center justify-between flex-wrap gap-4">
+                                <div className="flex items-center gap-3">
+                                    <span className="flex p-2 rounded-lg bg-amber-100 shrink-0">
+                                        <svg className="w-5 h-5 text-amber-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                            <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M12 8v4l3 3m6-3a9 9 0 11-18 0 9 9 0 0118 0z" />
+                                        </svg>
+                                    </span>
+                                    <p className="text-sm font-medium text-amber-800">
+                                        <span className="font-bold">Période d'essai en cours.</span>{' '}
+                                        {trialDaysLeft > 0 
+                                            ? `Il vous reste ${trialDaysLeft} jour${trialDaysLeft > 1 ? 's' : ''} pour découvrir toutes les fonctionnalités.` 
+                                            : "Votre période d'essai gratuit se termine aujourd'hui."}
+                                    </p>
+                                </div>
+                                {isAdmin && (
+                                    <Link to="/subscription" className="text-sm font-bold text-amber-800 bg-amber-200/50 hover:bg-amber-200 px-4 py-2 rounded-lg transition-colors whitespace-nowrap shrink-0">
+                                        Voir les offres
+                                    </Link>
+                                )}
+                            </div>
+                        </div>
+                    )}
                     <div className="p-4 md:p-8">
                         <Outlet />
                     </div>

@@ -102,12 +102,22 @@ export function ChurchProvider({ children }) {
     if (loading) return <div className="h-screen flex items-center justify-center"><Loader /></div>;
 
     // Don't redirect to create-church if on public routes or already on the create-church page
-    const publicRoutes = ['/join/', '/login', '/register', '/create-church'];
+    const publicRoutes = ['/join/', '/login', '/register', '/create-church', '/subscription', '/admin'];
     const isPublicRoute = publicRoutes.some(route => location.pathname.startsWith(route));
 
-    // If user has no church and not on a public route, redirect to create church page
-    if (!currentChurch && !loading && !isPublicRoute && user) {
-        return <Navigate to="/create-church" replace />;
+    if (!loading && user && !isPublicRoute) {
+        // If user has no church, redirect to subscription page
+        if (!currentChurch) {
+            return <Navigate to="/subscription" replace />;
+        }
+        
+        // If user has a church but subscription is inactive or expired, redirect to subscription page
+        const now = new Date();
+        const isSubscriptionExpired = currentChurch.subscription_end_date && new Date(currentChurch.subscription_end_date) < now;
+        
+        if ((currentChurch.subscription_status && currentChurch.subscription_status !== 'active' && currentChurch.subscription_status !== 'trial') || isSubscriptionExpired) {
+            return <Navigate to="/subscription" replace />;
+        }
     }
 
     const value = {
