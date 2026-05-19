@@ -49,7 +49,7 @@ export default function Register() {
             <div className="w-full max-w-[440px]">
                 {/* Logo */}
                 <div className="flex items-center gap-2 mb-12">
-                    <img src="/images/eglix-black.png" alt="Eglix Logo" className="h-10 w-auto" />
+                    <img src="/images/eglix-black.png" alt="Eglix Logo" className="h-12 w-auto" />
                 </div>
 
                 <h1 className="text-[40px] font-bold text-gray-900 leading-tight mb-2">

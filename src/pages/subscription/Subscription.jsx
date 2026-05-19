@@ -54,7 +54,7 @@ export default function Subscription() {
             {/* Navbar simplifiée */}
             <header className="bg-white border-b border-gray-200 px-6 py-4 flex items-center justify-between">
                 <div className="flex items-center gap-2">
-                    <img src="/images/eglix-black.png" alt="Eglix Logo" className="h-8 w-auto" />
+                    <img src="/images/eglix-black.png" alt="Eglix Logo" className="h-10 w-auto" />
                 </div>
                 <button 
                     onClick={() => signOut()} 

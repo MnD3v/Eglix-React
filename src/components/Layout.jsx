@@ -299,7 +299,7 @@ export default function Layout() {
             <aside className="hidden md:flex md:flex-col w-64 bg-white border-r border-gray-200 fixed h-full">
                 {/* Logo */}
                 <div className="h-16 flex items-center px-6 border-b border-gray-200">
-                    <img src="/images/eglix-black.png" alt="Eglix Logo" className="h-8 w-auto" />
+                    <img src="/images/eglix-black.png" alt="Eglix Logo" className="h-10 w-auto" />
                 </div>
 
                 {/* Navigation */}
@@ -387,7 +387,7 @@ export default function Layout() {
                 }`}>
                 {/* Logo */}
                 <div className="h-16 flex items-center justify-between px-6 border-b border-gray-200">
-                    <img src="/images/eglix-black.png" alt="Eglix Logo" className="h-8 w-auto" />
+                    <img src="/images/eglix-black.png" alt="Eglix Logo" className="h-10 w-auto" />
                     <button onClick={() => setIsSidebarOpen(false)}>
                         <Icons.Close />
                     </button>

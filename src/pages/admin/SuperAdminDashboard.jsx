@@ -118,7 +118,7 @@ export default function SuperAdminDashboard() {
             {/* Top Navigation */}
             <header className="bg-[#111827] text-white px-6 py-4 flex items-center justify-between">
                 <div className="flex items-center gap-3">
-                    <img src="/images/eglix-black.png" alt="Eglix Logo" className="h-8 w-auto invert brightness-0" />
+                    <img src="/images/eglix-black.png" alt="Eglix Logo" className="h-10 w-auto invert brightness-0" />
                     <span className="text-sm font-semibold bg-primary/20 text-primary-dark px-2.5 py-0.5 rounded-full border border-primary/30">
                         SUPER ADMIN
                     </span>
